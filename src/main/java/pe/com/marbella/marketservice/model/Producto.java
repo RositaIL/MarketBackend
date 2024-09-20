@@ -6,12 +6,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Check;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "producto")
+@Check(constraints = "stock >= 0")
 public class Producto {
 
     @Id
@@ -30,18 +32,33 @@ public class Producto {
     @Column(name = "precio_pro", nullable = false)
     private double precioPro;
 
-    @ManyToOne
+    @Column(name = "stock", nullable = false)
+    private double stock;
+
+    @Column(name = "stock_min", nullable = false)
+    private int stockMin;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_marca")
     private Marca marca;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_cat")
     private Categoria categoria;
 
-    @ManyToOne
-    @JoinColumn(name = "id_med")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_medida")
     private Medida medida;
 
     @Column(nullable = false)
     private boolean estado;
+
+    @PrePersist
+    public void onCreate() {
+        this.estado = true;
+    }
+
+    public void eliminar() {
+        this.estado = false;
+    }
 }
