@@ -27,7 +27,21 @@ public class Producto {
     @NotEmpty(message = "-Debe ingresar la descripción del producto")
     private String descripcionPro;
 
+    @Column(name = "precio_pro", nullable = false)
+    private double precioPro;
+
     @ManyToOne
     @JoinColumn(name = "id_marca")
     private Marca marca;
+
+    @ManyToOne
+    @JoinColumn(name = "id_cat")
+    private Categoria categoria;
+
+    @ManyToOne
+    @JoinColumn(name = "id_med")
+    private Medida medida;
+
+    @Column(nullable = false)
+    private boolean estado;
 }
