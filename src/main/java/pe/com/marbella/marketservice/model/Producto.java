@@ -11,8 +11,9 @@ import org.hibernate.annotations.Check;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "producto")
+@Table(name = "tb_producto")
 @Check(constraints = "stock >= 0")
 public class Producto {
 
@@ -20,6 +21,11 @@ public class Producto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id_pro")
     private Long idPro;
+
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_pro")
+    @SequenceGenerator(name = "seq_pro", sequenceName = "seq_pro", initialValue = 1000, allocationSize = 1)
+    @Column(name = "cod_pro", nullable = false, unique = true)
+    private int codPro;
 
     @Column(name = "nombre_pro", nullable = false, length = 80)
     @NotEmpty(message = "-Debe ingresar el nombre del producto")
@@ -32,11 +38,15 @@ public class Producto {
     @Column(name = "precio_pro", nullable = false)
     private double precioPro;
 
-    @Column(name = "stock", nullable = false)
-    private double stock;
+    @Column(name = "stock_actual", nullable = false)
+    private double stockActual;
 
     @Column(name = "stock_min", nullable = false)
     private int stockMin;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_medida")
+    private Medida medida;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_marca")
@@ -45,10 +55,6 @@ public class Producto {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_cat")
     private Categoria categoria;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_medida")
-    private Medida medida;
 
     @Column(nullable = false)
     private boolean estado;

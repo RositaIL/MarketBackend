@@ -1,11 +1,17 @@
 package pe.com.marbella.marketservice.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name = "marca", uniqueConstraints=
+@Table(name = "tb_marca", uniqueConstraints=
 @UniqueConstraint(columnNames={"nombre_marca"}))
 public class Marca {
 
@@ -19,4 +25,13 @@ public class Marca {
 
     @Column(nullable = false)
     private boolean estado;
+
+    @PrePersist
+    protected void onCreate() {
+        this.estado = true;
+    }
+
+    public void eliminar() {
+        this.estado = false;
+    }
 }
