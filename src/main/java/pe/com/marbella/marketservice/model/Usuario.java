@@ -22,17 +22,17 @@ public class Usuario {
     @Column(name = "nombre_usuario", nullable = false, length = 50)
     private String nombreUsu;
 
-    @Column(name = "email_usuario", nullable = false, length = 50)
+    @Column(name = "email_usuario", nullable = false, length = 50, unique = true)
     private String emailUsu;
 
-    @Column(name = "login_usuario", nullable = false, length = 50)
+    @Column(name = "login_usuario", nullable = false, length = 50, unique = true)
     private String loginUsu;
 
     @Column(name = "contrasena_usuario", nullable = false, length = 255)
     private String contrasenaUsu;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_rol")
+    @JoinColumn(name = "id_rol", nullable = false)
     private Rol rol;
 
     @Column(nullable = false)
@@ -42,7 +42,7 @@ public class Usuario {
     protected void onCreate() {
         this.estado = true;
     }
-
+    
     public void eliminar() {
         this.estado = false;
     }

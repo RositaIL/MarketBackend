@@ -27,6 +27,7 @@ public class Medida {
 
     @PrePersist
     protected void onCreate() {
+
         this.estado = true;
     }
 }

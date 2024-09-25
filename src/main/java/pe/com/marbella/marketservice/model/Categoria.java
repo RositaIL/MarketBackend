@@ -25,4 +25,8 @@ public class Categoria {
     @Column(nullable = false)
     private boolean estado;
 
+    @PrePersist
+    protected void onCreate() {
+        this.estado = true;
+    }
 }

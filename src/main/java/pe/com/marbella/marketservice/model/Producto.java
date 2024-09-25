@@ -61,10 +61,12 @@ public class Producto {
 
     @PrePersist
     public void onCreate() {
+
         this.estado = true;
     }
 
     public void eliminar() {
+
         this.estado = false;
     }
 }
