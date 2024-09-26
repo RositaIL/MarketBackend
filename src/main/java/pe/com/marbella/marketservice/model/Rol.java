@@ -1,11 +1,9 @@
 package pe.com.marbella.marketservice.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+@Data
 @Entity
 @Getter
 @Setter
@@ -20,7 +18,7 @@ public class Rol {
     private Long idRol;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "nombre_rol", nullable = false, unique = true)
+    @Column(name = "nombre_rol", nullable = false, unique = true, length = 30)
     private RolEnum nombreRol;
 
 }

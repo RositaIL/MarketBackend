@@ -1,27 +1,24 @@
 package pe.com.marbella.marketservice.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tb_detalle_salida")
+@IdClass(DetalleSalida.class)
+@Table(name = "detalle_salida")
 public class DetalleSalida {
 
     @Id
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_salida")
+    @ManyToOne(targetEntity = Salida.class)
+    @JoinColumn(name = "id_salida", nullable = false)
     private Salida salida;
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "id_producto")
+    @JoinColumn(name = "id_pro", nullable = false)
     private Producto producto;
 
     @Column(name = "cantidad", nullable = false)

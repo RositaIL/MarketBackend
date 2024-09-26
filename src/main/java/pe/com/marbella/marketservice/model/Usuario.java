@@ -1,35 +1,44 @@
 package pe.com.marbella.marketservice.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
+import lombok.*;
 
-@Getter
-@Setter
+import java.util.List;
+
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tb_usuario")
+@Table(name = "tb_usuario", uniqueConstraints= {
+        @UniqueConstraint(columnNames = {"nombre_apellidos_usu"}),
+        @UniqueConstraint(columnNames = {"login_usu"}),
+        @UniqueConstraint(columnNames = {"email_usu"})
+})
 public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_usuario")
+    @Column(name = "id_usu")
     private Long idUsuario;
 
-    @Column(name = "nombre_usuario", nullable = false, length = 50)
-    private String nombreUsu;
+    @Column(name = "nombres_apellidos_usu", nullable = false, length = 50)
+    @NotEmpty(message = "- Debe especificar el nombre completo del usuario")
+    private String nombresApellidosUsu;
 
-    @Column(name = "email_usuario", nullable = false, length = 50, unique = true)
+    @Column(name = "email_usu", nullable = false, length = 50, unique = true)
+    @NotEmpty(message = "- Debe especificar el correo electrónico")
     private String emailUsu;
 
-    @Column(name = "login_usuario", nullable = false, length = 50, unique = true)
-    private String loginUsu;
+    @Column(name = "login_usu", nullable = false, length = 50, unique = true)
+    @NotEmpty(message = "- Debe especificar el login de usuario")
+    @Size(min = 5, max = 15, message = "- El login de usuario debe medir entre 5 y 15 caracteres")
+    private String username;
 
-    @Column(name = "contrasena_usuario", nullable = false, length = 255)
-    private String contrasenaUsu;
+    @Column(name = "contrasena_usu", nullable = false, length = 255)
+    @NotEmpty(message = "- Debe especificar la contraseña")
+    private String password;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_rol", nullable = false)
@@ -42,7 +51,8 @@ public class Usuario {
     protected void onCreate() {
         this.estado = true;
     }
-    
+
+
     public void eliminar() {
         this.estado = false;
     }

@@ -7,7 +7,6 @@ import java.util.Optional;
 
 public interface CategoriaService {
 
-    List<Categoria> findByEstado(boolean estado);
-    Optional<Categoria> findByIdCategoriaAndEstado(Long idCategoria, boolean estado);
+
 
 }
