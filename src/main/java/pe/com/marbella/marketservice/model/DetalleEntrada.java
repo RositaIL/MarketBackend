@@ -20,7 +20,7 @@ public class DetalleEntrada {
     private Long producto;
 
     @ManyToOne
-    @JoinColumn(name = "id_entrada", nullable = false)
+    @JoinColumn(name = "id_entrada", nullable = false, referencedColumnName = "id_entrada")
     private Entrada entradaEntity;
 
     @ManyToOne
@@ -33,4 +33,15 @@ public class DetalleEntrada {
     @Column(name = "precio",nullable = false)
     private double precio;
 
+    @Column(nullable = false)
+    private boolean estado;
+
+    @PrePersist
+    protected void onCreate() {
+        this.estado = true;
+    }
+
+    public void eliminar() {
+        this.estado = false;
+    }
 }

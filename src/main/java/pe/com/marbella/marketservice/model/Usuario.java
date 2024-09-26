@@ -1,6 +1,7 @@
 package pe.com.marbella.marketservice.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -29,6 +30,7 @@ public class Usuario {
 
     @Column(name = "email_usu", nullable = false, length = 50, unique = true)
     @NotEmpty(message = "- Debe especificar el correo electrónico")
+    @Email(message = "- Debe ser un correo electrónico válido")
     private String emailUsu;
 
     @Column(name = "login_usu", nullable = false, length = 50, unique = true)
@@ -51,7 +53,6 @@ public class Usuario {
     protected void onCreate() {
         this.estado = true;
     }
-
 
     public void eliminar() {
         this.estado = false;

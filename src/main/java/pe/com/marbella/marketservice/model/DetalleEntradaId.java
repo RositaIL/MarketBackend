@@ -14,16 +14,4 @@ public class DetalleEntradaId implements Serializable {
     private Long entrada;
     private Long producto;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof DetalleEntradaId)) return false;
-        DetalleEntradaId that = (DetalleEntradaId) o;
-        return Objects.equals(entrada, that.entrada) && Objects.equals(producto, that.producto);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(entrada, producto);
-    }
 }

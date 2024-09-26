@@ -8,6 +8,8 @@ import pe.com.marbella.marketservice.dto.EntradaDTO;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -37,6 +39,18 @@ public class Entrada {
 
     @Column(nullable = false)
     private boolean estado;
+
+    @PrePersist
+    protected void onCreate() {
+        this.estado = true;
+    }
+
+    public void eliminar() {
+        this.estado = false;
+    }
+
+    @OneToMany(mappedBy = "entradaEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DetalleEntrada> detalleEntrada=new ArrayList<>();
 
     public Entrada(EntradaDTO dto) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");

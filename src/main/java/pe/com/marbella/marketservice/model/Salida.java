@@ -6,6 +6,8 @@ import pe.com.marbella.marketservice.dto.SalidaDTO;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -24,16 +26,27 @@ public class Salida {
 
     @ManyToOne
     @JoinColumn(name = "id_usu")
-    private Usuario idUsuario;
+    private Usuario usuario;
 
     @Column(nullable = false)
     private boolean estado;
 
+    @OneToMany(mappedBy = "salida", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DetalleSalida> detalleSalida=new ArrayList<>();
+
+    @PrePersist
+    protected void onCreate() {
+        this.estado = true;
+    }
+
+    public void eliminar() {
+        this.estado = false;
+    }
 
     public Salida(SalidaDTO dto) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         this.fechaSalida = LocalDate.parse(dto.fechaSalida(), formatter);
-        this.idUsuario=dto.usuario();
+        this.usuario=dto.usuario();
         this.estado=dto.estado();
     }
 }

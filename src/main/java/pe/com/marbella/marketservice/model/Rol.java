@@ -21,4 +21,16 @@ public class Rol {
     @Column(name = "nombre_rol", nullable = false, unique = true, length = 30)
     private RolEnum nombreRol;
 
+    @Column(nullable = false)
+    private boolean estado;
+
+    @PrePersist
+    protected void onCreate() {
+        this.estado = true;
+    }
+
+    public void eliminar() {
+        this.estado = false;
+    }
+
 }
