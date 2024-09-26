@@ -21,8 +21,7 @@ public class MarcaServiceImpl implements MarcaService {
     @Override
     public List<Marca> findAll() throws Exception {
         try{
-            List<Marca>model = marcaRepository.findByEstado(true);
-            return model;
+            return marcaRepository.findByEstado(true);
         }catch (Exception e){
             throw new Exception(e.getMessage());
         }
@@ -32,8 +31,12 @@ public class MarcaServiceImpl implements MarcaService {
     @Transactional
     public Marca findById(Long id) throws Exception {
         try{
-            Optional<Marca> opt = this.marcaRepository.findByIdMarcaAndEstado(id, true);
-            return opt.get();
+            Optional<Marca> opt = marcaRepository.findByIdMarcaAndEstado(id, true);
+            if(opt.isPresent()){
+                return opt.get();
+            } else {
+            throw new Exception("Marca no encontrada");
+            }
         }catch (Exception e){
             throw new Exception(e.getMessage());
         }
@@ -54,10 +57,7 @@ public class MarcaServiceImpl implements MarcaService {
     @Transactional
     public Marca update(Long id, Marca entity) throws Exception {
         try{
-            Optional<Marca> entityOptional = marcaRepository.findByIdMarcaAndEstado(id, true);
-            Marca entityUpdate = entityOptional.get();
-            entityUpdate = marcaRepository.save(entity);
-            return entityUpdate;
+            return marcaRepository.save(entity);
         }catch (Exception e){
             throw new Exception(e.getMessage());
         }
@@ -68,13 +68,13 @@ public class MarcaServiceImpl implements MarcaService {
     public boolean delete(Long id) throws Exception {
         try{
             Optional<Marca> entityOptional = marcaRepository.findByIdMarcaAndEstado(id, true);
-            Marca entityUpdate = entityOptional.get();
             if (entityOptional.isPresent()) {
+                Marca entityUpdate = entityOptional.get();
                 entityUpdate.eliminar();
                 marcaRepository.save(entityUpdate);
                 return true;
             } else {
-                throw new Exception("Proveedor no encontrado");
+                throw new Exception("Marca no encontrada");
             }
         }catch (Exception e){
             throw new Exception(e.getMessage());

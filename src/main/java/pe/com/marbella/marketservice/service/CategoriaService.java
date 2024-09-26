@@ -7,6 +7,6 @@ import java.util.Optional;
 
 public interface CategoriaService {
 
-
-
+    List<Categoria> listadoCategoria() throws Exception;
+    Categoria buscarCategoria(long id) throws Exception;
 }
