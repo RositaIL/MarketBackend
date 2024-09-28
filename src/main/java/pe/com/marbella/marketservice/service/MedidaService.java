@@ -8,6 +8,6 @@ public interface MedidaService {
     List<Medida> findAll() throws Exception;
     Medida findById(Long id) throws Exception;
     Medida save(Medida marca) throws Exception;
-    Medida update(Long id, Medida marca) throws Exception;
+    Medida update(Medida marca) throws Exception;
     boolean delete(Long id) throws Exception;
 }

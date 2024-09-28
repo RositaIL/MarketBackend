@@ -1,6 +1,6 @@
 package pe.com.marbella.marketservice.service.impl;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pe.com.marbella.marketservice.model.Producto;
@@ -16,16 +16,17 @@ public class ProductoServiceImpl implements ProductoService {
     ProductoRepository productoRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<Producto> findAll() throws Exception {
         try{
             return productoRepository.findByEstado(true);
         }catch (Exception e){
-            throw new Exception(e.getMessage());
+            throw new Exception(e);
         }
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public Producto findById(Long id) throws Exception {
         try{
             Optional<Producto> opt = productoRepository.findByIdProAndEstado(id, true);
@@ -35,7 +36,7 @@ public class ProductoServiceImpl implements ProductoService {
                 throw new Exception("Producto no encontrado");
             }
         }catch (Exception e){
-            throw new Exception(e.getMessage());
+            throw new Exception(e);
         }
     }
 
@@ -43,20 +44,19 @@ public class ProductoServiceImpl implements ProductoService {
     @Transactional
     public Producto save(Producto entity) throws Exception {
         try{
-            entity = productoRepository.save(entity);
-            return entity;
+            return productoRepository.save(entity);
         }catch (Exception e){
-            throw new Exception(e.getMessage());
+            throw new Exception(e);
         }
     }
 
     @Override
     @Transactional
-    public Producto update(Long id, Producto entity) throws Exception {
+    public Producto update(Producto entity) throws Exception {
         try{
             return productoRepository.save(entity);
         }catch (Exception e){
-            throw new Exception(e.getMessage());
+            throw new Exception(e);
         }
     }
 
@@ -74,7 +74,7 @@ public class ProductoServiceImpl implements ProductoService {
                 throw new Exception("Producto no encontrado");
             }
         }catch (Exception e){
-            throw new Exception(e.getMessage());
+            throw new Exception(e);
         }
     }
 }

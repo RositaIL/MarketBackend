@@ -12,6 +12,5 @@ public record EntradaDTO(
         Proveedor proveedor,
         boolean estado,
         List<DetalleEntradaDTO> detalleEntrada
-
 ) {
 }

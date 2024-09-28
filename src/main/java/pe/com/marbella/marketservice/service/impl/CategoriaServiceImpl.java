@@ -12,15 +12,15 @@ import java.util.List;
 @Service
 public class CategoriaServiceImpl implements CategoriaService {
     @Autowired
-    private CategoriaRepository data;
+    private CategoriaRepository categoriaRepository;
 
     @Override
     @Transactional(readOnly = true)
     public List<Categoria> listadoCategoria() throws Exception {
         try{
-            return data.findAll();
+            return categoriaRepository.findAll();
         }catch (Exception e){
-            throw new Exception(e.getMessage());
+            throw new Exception(e);
         }
     }
 
@@ -28,9 +28,9 @@ public class CategoriaServiceImpl implements CategoriaService {
     @Transactional(readOnly = true)
     public Categoria buscarCategoria(long id) throws Exception {
         try{
-            return data.findById(id).orElse(null);
+            return categoriaRepository.findById(id).orElse(null);
         }catch (Exception e){
-            throw new Exception(e.getMessage());
+            throw new Exception(e);
         }
     }
 }

@@ -9,6 +9,6 @@ public interface MarcaService {
     List<Marca> findAll() throws Exception;
     Marca findById(Long id) throws Exception;
     Marca save(Marca marca) throws Exception;
-    Marca update(Long id, Marca marca) throws Exception;
+    Marca update(Marca marca) throws Exception;
     boolean delete(Long id) throws Exception;
 }

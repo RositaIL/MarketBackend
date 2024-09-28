@@ -1,6 +1,6 @@
 package pe.com.marbella.marketservice.service.impl;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -19,16 +19,17 @@ public class MarcaServiceImpl implements MarcaService {
     private MarcaRepository marcaRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<Marca> findAll() throws Exception {
         try{
             return marcaRepository.findByEstado(true);
         }catch (Exception e){
-            throw new Exception(e.getMessage());
+            throw new Exception(e);
         }
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public Marca findById(Long id) throws Exception {
         try{
             Optional<Marca> opt = marcaRepository.findByIdMarcaAndEstado(id, true);
@@ -38,7 +39,7 @@ public class MarcaServiceImpl implements MarcaService {
             throw new Exception("Marca no encontrada");
             }
         }catch (Exception e){
-            throw new Exception(e.getMessage());
+            throw new Exception(e);
         }
     }
 
@@ -49,17 +50,17 @@ public class MarcaServiceImpl implements MarcaService {
             entity = marcaRepository.save(entity);
             return entity;
         }catch (Exception e){
-            throw new Exception(e.getMessage());
+            throw new Exception(e);
         }
     }
 
     @Override
     @Transactional
-    public Marca update(Long id, Marca entity) throws Exception {
+    public Marca update(Marca entity) throws Exception {
         try{
             return marcaRepository.save(entity);
         }catch (Exception e){
-            throw new Exception(e.getMessage());
+            throw new Exception(e);
         }
     }
 
@@ -77,7 +78,7 @@ public class MarcaServiceImpl implements MarcaService {
                 throw new Exception("Marca no encontrada");
             }
         }catch (Exception e){
-            throw new Exception(e.getMessage());
+            throw new Exception(e);
         }
     }
 }

@@ -2,6 +2,7 @@ package pe.com.marbella.marketservice.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import pe.com.marbella.marketservice.dto.DetalleSalidaDTO;
 
 @Data
 @NoArgsConstructor
@@ -42,4 +43,10 @@ public class DetalleSalida {
         this.estado = false;
     }
 
+    public DetalleSalida(DetalleSalidaDTO dto) {
+        this.salida = dto.idSalida();
+        this.producto = dto.idProducto();
+        this.cantidad = dto.cantidad();
+        this.estado = true;
+    }
 }

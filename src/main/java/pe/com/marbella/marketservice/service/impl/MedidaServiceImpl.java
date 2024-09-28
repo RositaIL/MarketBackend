@@ -1,6 +1,6 @@
 package pe.com.marbella.marketservice.service.impl;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pe.com.marbella.marketservice.model.Medida;
@@ -15,7 +15,7 @@ public class MedidaServiceImpl implements MedidaService {
     @Autowired
     MedidaRepository medidaRepository;
 
-    @Override
+    @Transactional(readOnly = true)
     public List<Medida> findAll() throws Exception {
         try{
             return medidaRepository.findByEstado(true);
@@ -25,7 +25,7 @@ public class MedidaServiceImpl implements MedidaService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public Medida findById(Long id) throws Exception {
         try{
             Optional<Medida> opt = this.medidaRepository.findByIdMedidaAndEstado(id, true);
@@ -43,8 +43,7 @@ public class MedidaServiceImpl implements MedidaService {
     @Transactional
     public Medida save(Medida entity) throws Exception {
         try{
-            entity = medidaRepository.save(entity);
-            return entity;
+            return medidaRepository.save(entity);
         }catch (Exception e){
             throw new Exception(e.getMessage());
         }
@@ -52,11 +51,11 @@ public class MedidaServiceImpl implements MedidaService {
 
     @Override
     @Transactional
-    public Medida update(Long id, Medida entity) throws Exception {
+    public Medida update(Medida entity) throws Exception {
         try{
             return medidaRepository.save(entity);
         }catch (Exception e){
-            throw new Exception(e.getMessage());
+            throw new Exception(e);
         }
     }
 
@@ -74,7 +73,7 @@ public class MedidaServiceImpl implements MedidaService {
                 throw new Exception("Medida no encontrada");
             }
         }catch (Exception e){
-            throw new Exception(e.getMessage());
+            throw new Exception(e);
         }
     }
 }

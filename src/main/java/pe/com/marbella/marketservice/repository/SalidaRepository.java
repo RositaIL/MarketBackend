@@ -9,4 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface SalidaRepository extends JpaRepository<Salida, Long> {
+    List<Salida> findByEstado(boolean estado);
+    Optional<Salida> findByIdSalidaAndEstado(Long idSalida, boolean estado);
 }

@@ -1,6 +1,7 @@
 package pe.com.marbella.marketservice.model;
 import jakarta.persistence.*;
 import lombok.*;
+import pe.com.marbella.marketservice.dto.DetalleEntradaDTO;
 
 @Data
 @NoArgsConstructor
@@ -43,5 +44,13 @@ public class DetalleEntrada {
 
     public void eliminar() {
         this.estado = false;
+    }
+
+    public DetalleEntrada(DetalleEntradaDTO dto){
+        this.entrada=dto.idEntrada();
+        this.producto=dto.idProducto();
+        this.cantidad=dto.cantidad();
+        this.precio=dto.precio();
+        this.estado=true;
     }
 }
