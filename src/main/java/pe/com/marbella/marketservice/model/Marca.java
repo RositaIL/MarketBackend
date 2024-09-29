@@ -2,6 +2,7 @@ package pe.com.marbella.marketservice.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import pe.com.marbella.marketservice.dto.MarcaDTO;
 
 @Data
 @AllArgsConstructor
@@ -29,5 +30,11 @@ public class Marca {
 
     public void eliminar() {
         this.estado = false;
+    }
+
+    public Marca(MarcaDTO marcaDTO){
+        this.idMarca=marcaDTO.idMarca();
+        this.nombreMarca=marcaDTO.nombreMarca();
+        this.estado=true;
     }
 }

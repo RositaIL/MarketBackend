@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pe.com.marbella.marketservice.dto.ProveedorDTO;
 
 import java.util.List;
 
@@ -56,5 +57,16 @@ public class Proveedor {
 
     public void eliminar() {
         this.estado = false;
+    }
+
+    public Proveedor(ProveedorDTO proveedorDTO){
+        this.idProveedor = proveedorDTO.idProveedor();
+        this.nombreProv = proveedorDTO.nombreProv();
+        this.direccProv = proveedorDTO.direccProv();
+        this.telefProv = proveedorDTO.telefProv();
+        this.rucProv = proveedorDTO.rucProv();
+        this.emailProv = proveedorDTO.emailProv();
+        this.nomRepresentante = proveedorDTO.nomRepresentante();
+        this.estado = true;
     }
 }

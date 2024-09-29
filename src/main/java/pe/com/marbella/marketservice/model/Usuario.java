@@ -5,15 +5,14 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-
-import java.util.List;
+import pe.com.marbella.marketservice.dto.UsuarioDTO;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "tb_usuario", uniqueConstraints= {
-        @UniqueConstraint(columnNames = {"nombre_apellidos_usu"}),
+        @UniqueConstraint(columnNames = {"nombres_apellidos_usu"}),
         @UniqueConstraint(columnNames = {"login_usu"}),
         @UniqueConstraint(columnNames = {"email_usu"})
 })
@@ -57,4 +56,5 @@ public class Usuario {
     public void eliminar() {
         this.estado = false;
     }
+
 }

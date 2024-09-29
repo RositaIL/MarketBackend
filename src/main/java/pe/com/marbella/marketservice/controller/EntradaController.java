@@ -33,16 +33,6 @@ public class EntradaController {
         return new ResponseEntity<>(savedEntrada, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<EntradaDTO> updateEntrada(@PathVariable Long id, @RequestBody EntradaDTO entradaDTO) throws Exception {
-        if (!id.equals(entradaDTO.idEntrada())) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        EntradaDTO updatedEntrada = entradaService.save(entradaDTO);
-        return new ResponseEntity<>(updatedEntrada, HttpStatus.OK);
-    }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEntrada(@PathVariable Long id) throws Exception {
         entradaService.delete(id);

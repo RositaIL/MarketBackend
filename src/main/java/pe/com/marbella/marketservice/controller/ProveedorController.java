@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pe.com.marbella.marketservice.dto.ProveedorDTO;
 import pe.com.marbella.marketservice.model.Proveedor;
 import pe.com.marbella.marketservice.service.ProveedorService;
 
@@ -16,60 +17,36 @@ public class ProveedorController {
     private ProveedorService proveedorService;
 
     @GetMapping
-    public ResponseEntity<List<Proveedor>> obtenerProveedores() {
-        try {
-            List<Proveedor> proveedores = proveedorService.findAll();
-            if (proveedores.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
-            return new ResponseEntity<>(proveedores, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<List<ProveedorDTO>> getAllProveedores() throws Exception {
+        List<ProveedorDTO> proveedores = proveedorService.findAll();
+        return new ResponseEntity<>(proveedores, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Proveedor> obtenerProveedorPorId(@PathVariable("id") Long id) {
-        try {
-            Proveedor proveedor = proveedorService.findById(id);
-            return new ResponseEntity<>(proveedor, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<ProveedorDTO> getProveedorById(@PathVariable Long id) throws Exception {
+        ProveedorDTO proveedorDTO = proveedorService.findById(id);
+        return new ResponseEntity<>(proveedorDTO, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<Proveedor> crearProveedor(@RequestBody Proveedor proveedor) {
-        try {
-            Proveedor nuevoProveedor = proveedorService.save(proveedor);
-            return new ResponseEntity<>(nuevoProveedor, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<ProveedorDTO> createProveedor(@RequestBody ProveedorDTO proveedorDTO) throws Exception {
+        ProveedorDTO savedProveedor = proveedorService.save(proveedorDTO);
+        return new ResponseEntity<>(savedProveedor, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Proveedor> actualizarProveedor(@PathVariable("id") Long id, @RequestBody Proveedor proveedor) {
-        try {
-            proveedor.setIdProveedor(id);
-            Proveedor proveedorActualizado = proveedorService.update(proveedor);
-            return new ResponseEntity<>(proveedorActualizado, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<ProveedorDTO> updateProveedor(@PathVariable Long id, @RequestBody ProveedorDTO proveedorDTO) throws Exception {
+        if (!id.equals(proveedorDTO.idProveedor())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+
+        ProveedorDTO updatedProveedor = proveedorService.update(proveedorDTO);
+        return new ResponseEntity<>(updatedProveedor, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarProveedor(@PathVariable("id") Long id) {
-        try {
-            boolean eliminado = proveedorService.delete(id);
-            if (eliminado) {
-                return new ResponseEntity<>(HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<Void> deleteProveedor(@PathVariable Long id) throws Exception {
+        proveedorService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

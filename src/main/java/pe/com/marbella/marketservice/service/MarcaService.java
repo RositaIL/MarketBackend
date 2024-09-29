@@ -1,14 +1,14 @@
 package pe.com.marbella.marketservice.service;
 
-import pe.com.marbella.marketservice.model.Marca;
+import pe.com.marbella.marketservice.dto.MarcaDTO;
 
 import java.util.List;
 
 public interface MarcaService {
 
-    List<Marca> findAll() throws Exception;
-    Marca findById(Long id) throws Exception;
-    Marca save(Marca marca) throws Exception;
-    Marca update(Marca marca) throws Exception;
-    boolean delete(Long id) throws Exception;
+    List<MarcaDTO> findAll() throws Exception;
+    MarcaDTO findById(Long id) throws Exception;
+    MarcaDTO save(MarcaDTO marca) throws Exception;
+    MarcaDTO update(MarcaDTO marca) throws Exception;
+    void delete(Long id) throws Exception;
 }

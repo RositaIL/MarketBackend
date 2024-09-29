@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pe.com.marbella.marketservice.model.Categoria;
+import pe.com.marbella.marketservice.dto.CategoriaDTO;
 import pe.com.marbella.marketservice.service.CategoriaService;
 
 import java.util.List;
@@ -16,47 +16,36 @@ public class CategoriaController {
     private CategoriaService categoriaService;
 
     @GetMapping
-    public ResponseEntity<List<Categoria>> obtenerCategorias() throws Exception {
-        List<Categoria> categorias = categoriaService.listadoCategoria();
-        if (categorias.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
+    public ResponseEntity<List<CategoriaDTO>> getAllCategorias() throws Exception {
+        List<CategoriaDTO> categorias = categoriaService.listadoCategoria();
         return new ResponseEntity<>(categorias, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Categoria> obtenerCategoriaPorId(@PathVariable("id") long id) throws Exception {
-        Categoria categoria = categoriaService.buscarCategoria(id);
-        if (categoria == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(categoria, HttpStatus.OK);
+    public ResponseEntity<CategoriaDTO> getCategoriaById(@PathVariable Long id) throws Exception {
+        CategoriaDTO categoriaDTO = categoriaService.buscarCategoria(id);
+        return new ResponseEntity<>(categoriaDTO, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<Categoria> guardarCategoria(@RequestBody Categoria categoria) throws Exception {
-        Categoria nuevaCategoria = categoriaService.save(categoria);
-        return new ResponseEntity<>(nuevaCategoria, HttpStatus.CREATED);
+    public ResponseEntity<CategoriaDTO> createCategoria(@RequestBody CategoriaDTO categoriaDTO) throws Exception {
+        CategoriaDTO savedCategoria = categoriaService.save(categoriaDTO);
+        return new ResponseEntity<>(savedCategoria, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Categoria> actualizarCategoria(@PathVariable("id") long id, @RequestBody Categoria categoria) throws Exception {
-        Categoria categoriaExistente = categoriaService.buscarCategoria(id);
-        if (categoriaExistente == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<CategoriaDTO> updateCategoria(@PathVariable Long id, @RequestBody CategoriaDTO categoriaDTO) throws Exception {
+        if (!id.equals(categoriaDTO.idCategoria())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        categoria.setIdCategoria(id);
-        Categoria categoriaActualizada = categoriaService.update(categoria);
-        return new ResponseEntity<>(categoriaActualizada, HttpStatus.OK);
+
+        CategoriaDTO updatedCategoria = categoriaService.update(categoriaDTO);
+        return new ResponseEntity<>(updatedCategoria, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> eliminarCategoria(@PathVariable("id") long id) throws Exception {
-        boolean eliminado = categoriaService.delete(id);
-        if (eliminado) {
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<Void> deleteCategoria(@PathVariable Long id) throws Exception {
+        categoriaService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

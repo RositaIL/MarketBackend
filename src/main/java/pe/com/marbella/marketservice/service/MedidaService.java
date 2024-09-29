@@ -1,13 +1,14 @@
 package pe.com.marbella.marketservice.service;
 
+import pe.com.marbella.marketservice.dto.MedidaDTO;
 import pe.com.marbella.marketservice.model.Medida;
 
 import java.util.List;
 
 public interface MedidaService {
-    List<Medida> findAll() throws Exception;
-    Medida findById(Long id) throws Exception;
-    Medida save(Medida marca) throws Exception;
-    Medida update(Medida marca) throws Exception;
-    boolean delete(Long id) throws Exception;
+    List<MedidaDTO> findAll() throws Exception;
+    MedidaDTO findById(Long id) throws Exception;
+    MedidaDTO save(MedidaDTO marca) throws Exception;
+    MedidaDTO update(MedidaDTO marca) throws Exception;
+    void delete(Long id) throws Exception;
 }

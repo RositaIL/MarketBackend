@@ -2,6 +2,7 @@ package pe.com.marbella.marketservice.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import pe.com.marbella.marketservice.dto.MedidaDTO;
 
 @Data
 @NoArgsConstructor
@@ -28,5 +29,11 @@ public class Medida {
 
     public void eliminar() {
         this.estado = false;
+    }
+
+    public Medida(MedidaDTO medidaDTO){
+        this.idMedida=medidaDTO.idMedida();
+        this.nombreMedida=medidaDTO.nombreMedida();
+        this.estado=true;
     }
 }

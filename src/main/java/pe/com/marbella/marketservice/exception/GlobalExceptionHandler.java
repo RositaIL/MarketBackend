@@ -3,6 +3,7 @@ package pe.com.marbella.marketservice.exception;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -23,5 +24,13 @@ public class GlobalExceptionHandler {
         ErrorResponse errorDetails = new ErrorResponse("Recurso no encontrado", requestDescription);
         System.out.println(ex.getMessage());
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        StringBuilder errors = new StringBuilder("Errores de validación:");
+        ex.getBindingResult().getFieldErrors().forEach(error ->
+                errors.append("\n").append(error.getField()).append(": ").append(error.getDefaultMessage()));
+        return new ResponseEntity<>(errors.toString(), HttpStatus.BAD_REQUEST);
     }
 }

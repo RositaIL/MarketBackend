@@ -1,13 +1,13 @@
 package pe.com.marbella.marketservice.service;
 
-import pe.com.marbella.marketservice.model.Usuario;
+import pe.com.marbella.marketservice.dto.UsuarioDTO;
 
 import java.util.List;
 
 public interface UsuarioService {
-    List<Usuario> findAll() throws Exception;
-    Usuario findById(Long id) throws Exception;
-    Usuario save(Usuario usuario) throws Exception;
-    Usuario update(Usuario usuario) throws Exception;
-    boolean delete(Long id) throws Exception;
+    List<UsuarioDTO> findAll() throws Exception;
+    UsuarioDTO findById(Long id) throws Exception;
+    UsuarioDTO save(UsuarioDTO usuario) throws Exception;
+    UsuarioDTO update(UsuarioDTO usuario) throws Exception;
+    void delete(Long id) throws Exception;
 }

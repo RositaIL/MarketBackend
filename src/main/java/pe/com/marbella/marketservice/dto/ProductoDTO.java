@@ -1,13 +1,14 @@
 package pe.com.marbella.marketservice.dto;
 
 public record ProductoDTO(
+        Long idPro,
         String nombrePro,
         String descripcionPro,
         double precioPro,
         int stockActual,
         int stockMin,
-        int idMedida,
-        int idMarca,
-        int idCategoria
+        Long idMedida,
+        Long idMarca,
+        Long idCategoria
 ) {
 }

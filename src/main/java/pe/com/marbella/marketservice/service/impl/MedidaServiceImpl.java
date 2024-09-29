@@ -1,79 +1,71 @@
 package pe.com.marbella.marketservice.service.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pe.com.marbella.marketservice.dto.MedidaDTO;
 import pe.com.marbella.marketservice.model.Medida;
 import pe.com.marbella.marketservice.repository.MedidaRepository;
 import pe.com.marbella.marketservice.service.MedidaService;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MedidaServiceImpl implements MedidaService {
     @Autowired
     MedidaRepository medidaRepository;
 
-    @Transactional(readOnly = true)
-    public List<Medida> findAll() throws Exception {
-        try{
-            return medidaRepository.findByEstado(true);
-        }catch (Exception e){
-            throw new Exception(e.getMessage());
-        }
+    private MedidaDTO mapToDTO(Medida medida) {
+        return new MedidaDTO(
+                medida.getIdMedida(),
+                medida.getNombreMedida());
+    }
+
+    private Medida mapToEntity(MedidaDTO medidaDTO) {
+        return new Medida(medidaDTO);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Medida findById(Long id) throws Exception {
-        try{
-            Optional<Medida> opt = this.medidaRepository.findByIdMedidaAndEstado(id, true);
-            if(opt.isPresent()){
-                return opt.get();
-            } else {
-                throw new Exception("Medida no encontrada");
-            }
-        }catch (Exception e){
-            throw new Exception(e.getMessage());
-        }
+    public List<MedidaDTO> findAll() throws Exception {
+        return medidaRepository.findByEstado(true).stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public MedidaDTO findById(Long id) throws Exception {
+        Medida medida = medidaRepository.findByIdMedidaAndEstado(id, true)
+                .orElseThrow(() -> new EntityNotFoundException("Medida no encontrada"));
+        return mapToDTO(medida);
     }
 
     @Override
     @Transactional
-    public Medida save(Medida entity) throws Exception {
-        try{
-            return medidaRepository.save(entity);
-        }catch (Exception e){
-            throw new Exception(e.getMessage());
-        }
+    public MedidaDTO save(MedidaDTO medidaDTO) throws Exception {
+        Medida newMedida = mapToEntity(medidaDTO);
+        Medida savedMedida = medidaRepository.save(newMedida);
+        return mapToDTO(savedMedida);
     }
 
     @Override
     @Transactional
-    public Medida update(Medida entity) throws Exception {
-        try{
-            return medidaRepository.save(entity);
-        }catch (Exception e){
-            throw new Exception(e);
-        }
+    public MedidaDTO update(MedidaDTO medidaDTO) throws Exception {
+        Medida medida = medidaRepository.findById(medidaDTO.idMedida())
+                .orElseThrow(() -> new EntityNotFoundException("Medida no encontrada"));
+        medida.setNombreMedida(medidaDTO.nombreMedida());
+        return mapToDTO(medidaRepository.save(medida));
     }
 
     @Override
     @Transactional
-    public boolean delete(Long id) throws Exception {
-        try{
-            Optional<Medida> entityOptional = medidaRepository.findByIdMedidaAndEstado(id, true);
-            if (entityOptional.isPresent()) {
-                Medida entityUpdate = entityOptional.get();
-                entityUpdate.eliminar();
-                medidaRepository.save(entityUpdate);
-                return true;
-            } else {
-                throw new Exception("Medida no encontrada");
-            }
-        }catch (Exception e){
-            throw new Exception(e);
-        }
+    public void delete(Long id) throws Exception {
+        Medida medida = medidaRepository.findByIdMedidaAndEstado(id, true)
+                .orElseThrow(() -> new EntityNotFoundException("Medida no encontrada"));
+        medida.eliminar();
+        medidaRepository.save(medida);
     }
 }

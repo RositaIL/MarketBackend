@@ -2,6 +2,7 @@ package pe.com.marbella.marketservice.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import pe.com.marbella.marketservice.dto.CategoriaDTO;
 
 @Data
 @AllArgsConstructor
@@ -28,5 +29,11 @@ public class Categoria {
 
     public void eliminar() {
         this.estado = false;
+    }
+
+    public Categoria(CategoriaDTO categoriaDTO){
+        this.idCategoria = categoriaDTO.idCategoria();
+        this.nombreCategoria = categoriaDTO.nombreCategoria();
+        this.estado = true;
     }
 }

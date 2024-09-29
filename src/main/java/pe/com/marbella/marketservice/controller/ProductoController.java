@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pe.com.marbella.marketservice.model.Producto;
+import pe.com.marbella.marketservice.dto.ProductoDTO;
 import pe.com.marbella.marketservice.service.ProductoService;
 
 import java.util.List;
@@ -16,60 +16,36 @@ public class ProductoController {
     private ProductoService productoService;
 
     @GetMapping
-    public ResponseEntity<List<Producto>> obtenerProductos() {
-        try {
-            List<Producto> productos = productoService.findAll();
-            if (productos.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
-            return new ResponseEntity<>(productos, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<List<ProductoDTO>> getAllProductos() throws Exception {
+        List<ProductoDTO> productos = productoService.findAll();
+        return new ResponseEntity<>(productos, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Producto> obtenerProductoPorId(@PathVariable("id") Long id) {
-        try {
-            Producto producto = productoService.findById(id);
-            return new ResponseEntity<>(producto, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<ProductoDTO> getProductoById(@PathVariable Long id) throws Exception {
+        ProductoDTO productoDTO = productoService.findById(id);
+        return new ResponseEntity<>(productoDTO, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<Producto> crearProducto(@RequestBody Producto producto) {
-        try {
-            Producto nuevoProducto = productoService.save(producto);
-            return new ResponseEntity<>(nuevoProducto, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<ProductoDTO> createProducto(@RequestBody ProductoDTO productoDTO) throws Exception {
+        ProductoDTO savedProducto = productoService.save(productoDTO);
+        return new ResponseEntity<>(savedProducto, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Producto> actualizarProducto(@PathVariable("id") Long id, @RequestBody Producto producto) {
-        try {
-            producto.setIdPro(id);
-            Producto productoActualizado = productoService.update(producto);
-            return new ResponseEntity<>(productoActualizado, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<ProductoDTO> updateProducto(@PathVariable Long id, @RequestBody ProductoDTO productoDTO) throws Exception {
+        if (!id.equals(productoDTO.idPro())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+
+        ProductoDTO updatedProducto = productoService.update(productoDTO);
+        return new ResponseEntity<>(updatedProducto, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarProducto(@PathVariable("id") Long id) {
-        try {
-            boolean eliminado = productoService.delete(id);
-            if (eliminado) {
-                return new ResponseEntity<>(HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<Void> deleteProducto(@PathVariable Long id) throws Exception {
+        productoService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
