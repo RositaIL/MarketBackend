@@ -7,7 +7,7 @@ import java.util.List;
 public record SalidaDTO(
         Long idSalida,
         String fechaSalida,
-        Usuario usuario,
+        Long idUsuario,
         boolean estado,
         List<DetalleSalidaDTO> detalleSalida) {
 }

@@ -8,6 +8,7 @@ import pe.com.marbella.marketservice.repository.CategoriaRepository;
 import pe.com.marbella.marketservice.service.CategoriaService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CategoriaServiceImpl implements CategoriaService {
@@ -29,6 +30,45 @@ public class CategoriaServiceImpl implements CategoriaService {
     public Categoria buscarCategoria(long id) throws Exception {
         try{
             return categoriaRepository.findById(id).orElse(null);
+        }catch (Exception e){
+            throw new Exception(e);
+        }
+    }
+
+    @Override
+    @Transactional
+    public Categoria save(Categoria entity) throws Exception {
+        try{
+            entity = categoriaRepository.save(entity);
+            return entity;
+        }catch (Exception e){
+            throw new Exception(e);
+        }
+    }
+
+    @Override
+    @Transactional
+    public Categoria update(Categoria entity) throws Exception {
+        try{
+            return categoriaRepository.save(entity);
+        }catch (Exception e){
+            throw new Exception(e);
+        }
+    }
+
+    @Override
+    @Transactional
+    public boolean delete(Long id) throws Exception {
+        try{
+            Optional<Categoria> entityOptional = categoriaRepository.findByIdCategoriaAndEstado(id, true);
+            if (entityOptional.isPresent()) {
+                Categoria entityUpdate = entityOptional.get();
+                entityUpdate.eliminar();
+                categoriaRepository.save(entityUpdate);
+                return true;
+            } else {
+                throw new Exception("Categoría no encontrada");
+            }
         }catch (Exception e){
             throw new Exception(e);
         }

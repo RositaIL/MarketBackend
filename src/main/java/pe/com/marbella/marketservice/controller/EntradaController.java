@@ -1,12 +1,10 @@
 package pe.com.marbella.marketservice.controller;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pe.com.marbella.marketservice.dto.EntradaDTO;
-import pe.com.marbella.marketservice.model.Entrada;
 import pe.com.marbella.marketservice.service.EntradaService;
 
 import java.util.List;
@@ -18,47 +16,36 @@ public class EntradaController {
     private EntradaService entradaService;
 
     @GetMapping
-    public ResponseEntity<List<Entrada>> obtenerEntradas() {
-        try {
-            List<Entrada> entradas = entradaService.findAll();
-            if (entradas.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
-            return new ResponseEntity<>(entradas, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<List<EntradaDTO>> getAllEntradas() throws Exception {
+        List<EntradaDTO> entradas = entradaService.findAll();
+        return new ResponseEntity<>(entradas, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Entrada> obtenerEntradaPorId(@PathVariable("id") Long id) {
-        try {
-            Entrada entrada = entradaService.findById(id);
-            return new ResponseEntity<>(entrada, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<EntradaDTO> getEntradaById(@PathVariable Long id) throws Exception {
+        EntradaDTO entradaDTO = entradaService.findById(id);
+        return new ResponseEntity<>(entradaDTO, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<Entrada> crearEntrada(@RequestBody EntradaDTO entradaDTO) {
-        try {
-            Entrada nuevaEntrada = entradaService.save(entradaDTO);
-            return new ResponseEntity<>(nuevaEntrada, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<EntradaDTO> createEntrada(@RequestBody EntradaDTO entradaDTO) throws Exception {
+        EntradaDTO savedEntrada = entradaService.save(entradaDTO);
+        return new ResponseEntity<>(savedEntrada, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<EntradaDTO> updateEntrada(@PathVariable Long id, @RequestBody EntradaDTO entradaDTO) throws Exception {
+        if (!id.equals(entradaDTO.idEntrada())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+
+        EntradaDTO updatedEntrada = entradaService.save(entradaDTO);
+        return new ResponseEntity<>(updatedEntrada, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarEntrada(@PathVariable("id") Long id) {
-        try {
-            entradaService.delete(id);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<Void> deleteEntrada(@PathVariable Long id) throws Exception {
+        entradaService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

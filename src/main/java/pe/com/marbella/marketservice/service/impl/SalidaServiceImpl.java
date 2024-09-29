@@ -14,7 +14,7 @@ import pe.com.marbella.marketservice.service.DetalleSalidaService;
 import pe.com.marbella.marketservice.service.SalidaService;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class SalidaServiceImpl implements SalidaService {
@@ -27,66 +27,69 @@ public class SalidaServiceImpl implements SalidaService {
     @Autowired
     DetalleSalidaService detalleSalidaService;
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<Salida> findAll() throws Exception {
-        try{
-            return salidaRepository.findByEstado(true);
-        }catch (Exception e){
-            throw new Exception(e);
-        }
+    private SalidaDTO mapToDTO(Salida salida) {
+        List<DetalleSalidaDTO> detalleSalidaDTOList = salida.getDetalleSalida().stream()
+                .map(detalle -> new DetalleSalidaDTO(
+                        detalle.getSalida(),
+                        detalle.getProducto(),
+                        detalle.getCantidad()))
+                .collect(Collectors.toList());
+
+        return new SalidaDTO(
+                salida.getIdSalida(),
+                salida.getFechaSalida().toString(),
+                salida.getUsuario().getIdUsuario(),
+                salida.isEstado(),
+                detalleSalidaDTOList
+        );
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Salida findById(Long id) throws Exception {
-        try{
-            Optional<Salida> opt = salidaRepository.findByIdSalidaAndEstado(id, true);
-            if(opt.isPresent()){
-                return opt.get();
-            } else {
-                throw new Exception("Salida no encontrada");
-            }
-        }catch (Exception e){
-            throw new Exception(e);
-        }
+    public List<SalidaDTO> findAll() throws Exception {
+        List<Salida> salidas = salidaRepository.findByEstado(true);
+        return salidas.stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public SalidaDTO findById(Long id) throws Exception {
+        Salida salida = salidaRepository.findByIdSalidaAndEstado(id, true)
+                .orElseThrow(() -> new EntityNotFoundException("Salida no encontrada"));
+
+        return mapToDTO(salida);
     }
 
     @Override
     @Transactional
-    public Salida save(SalidaDTO entity) throws Exception {
-        try {
-            Optional<Usuario> usuario = usuarioRepository.findById(entity.usuario().getIdUsuario());
+    public SalidaDTO save(SalidaDTO salidaDTO) throws Exception {
+        Usuario usuario = usuarioRepository.findById(salidaDTO.idUsuario())
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
 
-            if (usuario.isEmpty()) {
-                throw new Exception("Usuario no encontrado");
-            }
+        Salida salida = new Salida(salidaDTO);
+        salida.setUsuario(usuario);
 
-            Salida salida = new Salida(entity);
-            Salida respuesta = salidaRepository.save(salida);
+        Salida respuesta = salidaRepository.save(salida);
 
-            for (DetalleSalidaDTO detalleDTO : entity.detalleSalida()) {
-                DetalleSalida detalleSalida = new DetalleSalida(detalleDTO);
-                detalleSalidaService.save(detalleSalida);
-            }
-
-            return respuesta;
-        } catch (Exception e) {
-            throw new Exception(e);
+        for (DetalleSalidaDTO detalleDTO : salidaDTO.detalleSalida()) {
+            DetalleSalida detalleSalida = new DetalleSalida(detalleDTO);
+            detalleSalidaService.save(detalleSalida);
         }
+
+        return mapToDTO(respuesta);
     }
 
     @Override
     @Transactional
     public void delete(Long idSalida) throws Exception {
-        try {
-            Salida salida = salidaRepository.findById(idSalida)
-                    .orElseThrow(() -> new EntityNotFoundException("La salida con ID: " + idSalida + " no existe"));
-            detalleSalidaService.delete(idSalida);
-            salida.setEstado(false);
-            salidaRepository.save(salida);
-        } catch (Exception e) {
-            throw new Exception(e);
-        }
+        Salida salida = salidaRepository.findById(idSalida)
+                .orElseThrow(() -> new EntityNotFoundException("La salida con ID: " + idSalida + " no existe"));
+
+        detalleSalidaService.delete(idSalida);
+
+        salida.setEstado(false);
+        salidaRepository.save(salida);
     }
 }

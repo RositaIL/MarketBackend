@@ -55,8 +55,6 @@ public class Entrada {
     public Entrada(EntradaDTO dto) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         this.fechaEntrada = LocalDate.parse(dto.fechaEntrada(), formatter);
-        this.usuario=dto.usuario();
-        this.proveedor=dto.proveedor();
         this.estado=dto.estado();
     }
 }

@@ -47,8 +47,7 @@ public class MarcaServiceImpl implements MarcaService {
     @Transactional
     public Marca save(Marca entity) throws Exception {
         try{
-            entity = marcaRepository.save(entity);
-            return entity;
+            return marcaRepository.save(entity);
         }catch (Exception e){
             throw new Exception(e);
         }

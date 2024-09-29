@@ -17,7 +17,7 @@ import pe.com.marbella.marketservice.service.DetalleEntradaService;
 import pe.com.marbella.marketservice.service.EntradaService;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class EntradaServiceImpl implements EntradaService {
@@ -31,67 +31,75 @@ public class EntradaServiceImpl implements EntradaService {
     @Autowired
     DetalleEntradaService detalleEntradaService;
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<Entrada> findAll() throws Exception {
-        try{
-            return entradaRepository.findByEstado(true);
-        }catch (Exception e){
-            throw new Exception(e);
-        }
+    private EntradaDTO mapToDTO(Entrada entrada) {
+        List<DetalleEntradaDTO> detalleEntradaDTOList = entrada.getDetalleEntrada().stream()
+                .map(detalle -> new DetalleEntradaDTO(
+                        detalle.getEntrada(),
+                        detalle.getProducto(),
+                        detalle.getCantidad(),
+                        detalle.getPrecio()))
+                .collect(Collectors.toList());
+
+        return new EntradaDTO(
+                entrada.getIdEntrada(),
+                entrada.getFechaEntrada().toString(),
+                entrada.getUsuario().getIdUsuario(),
+                entrada.getProveedor().getIdProveedor(),
+                entrada.isEstado(),
+                detalleEntradaDTOList
+        );
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Entrada findById(Long id) throws Exception {
-        try{
-            Optional<Entrada> opt = entradaRepository.findByIdEntradaAndEstado(id, true);
-            if(opt.isPresent()){
-                return opt.get();
-            } else {
-                throw new Exception("Entrada no encontrada");
-            }
-        }catch (Exception e){
-            throw new Exception(e);
-        }
+    public List<EntradaDTO> findAll() throws Exception {
+        List<Entrada> entradas = entradaRepository.findByEstado(true);
+        return entradas.stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public EntradaDTO findById(Long id) throws Exception {
+        Entrada entrada = entradaRepository.findByIdEntradaAndEstado(id, true)
+                .orElseThrow(() -> new EntityNotFoundException("Entrada no encontrada"));
+
+        return mapToDTO(entrada);
     }
 
     @Override
     @Transactional
-    public Entrada save(EntradaDTO entity) throws Exception {
-        try {
-            Optional<Usuario> usuario = usuarioRepository.findById(entity.usuario().getIdUsuario());
-            Optional<Proveedor> proveedor = proveedorRepository.findById(entity.proveedor().getIdProveedor());
+    public EntradaDTO save(EntradaDTO entradaDTO) throws Exception {
+        Usuario usuario = usuarioRepository.findById(entradaDTO.idUsuario())
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
 
-            if (usuario.isEmpty() || proveedor.isEmpty()) {
-                throw new Exception("Usuario o proveedor no encontrado");
-            }
+        Proveedor proveedor = proveedorRepository.findById(entradaDTO.idProveedor())
+                .orElseThrow(() -> new EntityNotFoundException("Proveedor no encontrado"));
 
-            Entrada entrada = new Entrada(entity);
-            Entrada respuesta = entradaRepository.save(entrada);
+        Entrada entrada = new Entrada(entradaDTO);
+        entrada.setUsuario(usuario);
+        entrada.setProveedor(proveedor);
 
-            for (DetalleEntradaDTO detalleDTO : entity.detalleEntrada()) {
-                DetalleEntrada detalleEntrada = new DetalleEntrada(detalleDTO);
-                detalleEntradaService.save(detalleEntrada);
-            }
+        Entrada respuesta = entradaRepository.save(entrada);
 
-            return respuesta;
-        } catch (Exception e) {
-            throw new Exception(e);
+        for (DetalleEntradaDTO detalleDTO : entradaDTO.detalleEntrada()) {
+            DetalleEntrada detalleEntrada = new DetalleEntrada(detalleDTO);
+            detalleEntradaService.save(detalleEntrada);
         }
+
+        return mapToDTO(respuesta);
     }
 
     @Override
     @Transactional
     public void delete(Long idEntrada) throws Exception {
-        try {
-            Entrada entrada = entradaRepository.findById(idEntrada)
-                    .orElseThrow(() -> new EntityNotFoundException("La entrada con ID: " + idEntrada + " no existe"));
-            detalleEntradaService.delete(idEntrada);
-            entrada.setEstado(false);
-            entradaRepository.save(entrada);
-        } catch (Exception e) {
-            throw new Exception(e);
-        }
+        Entrada entrada = entradaRepository.findById(idEntrada)
+                .orElseThrow(() -> new EntityNotFoundException("La entrada con ID: " + idEntrada + " no existe"));
+
+        detalleEntradaService.delete(idEntrada);
+
+        entrada.setEstado(false);
+        entradaRepository.save(entrada);
     }
 }
