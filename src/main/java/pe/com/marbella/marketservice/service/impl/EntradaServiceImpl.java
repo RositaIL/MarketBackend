@@ -45,7 +45,6 @@ public class EntradaServiceImpl implements EntradaService {
                 entrada.getFechaEntrada().toString(),
                 entrada.getUsuario().getIdUsuario(),
                 entrada.getProveedor().getIdProveedor(),
-                entrada.isEstado(),
                 detalleEntradaDTOList
         );
     }
@@ -71,6 +70,10 @@ public class EntradaServiceImpl implements EntradaService {
     @Override
     @Transactional
     public EntradaDTO save(EntradaDTO entradaDTO) throws Exception {
+        if (entradaDTO.detalleEntrada() == null || entradaDTO.detalleEntrada().isEmpty()) {
+            throw new IllegalArgumentException("Debe proporcionar al menos un detalle de entrada.");
+        }
+
         Usuario usuario = usuarioRepository.findById(entradaDTO.idUsuario())
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
 
@@ -85,6 +88,7 @@ public class EntradaServiceImpl implements EntradaService {
 
         for (DetalleEntradaDTO detalleDTO : entradaDTO.detalleEntrada()) {
             DetalleEntrada detalleEntrada = new DetalleEntrada(detalleDTO);
+            detalleEntrada.setEntrada(respuesta.getIdEntrada());
             detalleEntradaService.save(detalleEntrada);
         }
 

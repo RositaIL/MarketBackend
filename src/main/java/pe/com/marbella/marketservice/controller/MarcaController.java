@@ -1,5 +1,6 @@
 package pe.com.marbella.marketservice.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,13 +30,13 @@ public class MarcaController {
     }
 
     @PostMapping
-    public ResponseEntity<MarcaDTO> createMarca(@RequestBody MarcaDTO marcaDTO) throws Exception {
+    public ResponseEntity<MarcaDTO> createMarca(@Valid @RequestBody MarcaDTO marcaDTO) throws Exception {
         MarcaDTO savedMarca = marcaService.save(marcaDTO);
         return new ResponseEntity<>(savedMarca, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MarcaDTO> updateMarca(@PathVariable Long id, @RequestBody MarcaDTO marcaDTO) throws Exception {
+    public ResponseEntity<MarcaDTO> updateMarca(@PathVariable Long id,@Valid @RequestBody MarcaDTO marcaDTO) throws Exception {
         if (!id.equals(marcaDTO.idMarca())) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

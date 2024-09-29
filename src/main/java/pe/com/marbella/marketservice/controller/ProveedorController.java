@@ -1,16 +1,17 @@
 package pe.com.marbella.marketservice.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pe.com.marbella.marketservice.dto.ProveedorDTO;
-import pe.com.marbella.marketservice.model.Proveedor;
 import pe.com.marbella.marketservice.service.ProveedorService;
 
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/proveedor")
 public class ProveedorController {
     @Autowired
@@ -29,13 +30,13 @@ public class ProveedorController {
     }
 
     @PostMapping
-    public ResponseEntity<ProveedorDTO> createProveedor(@RequestBody ProveedorDTO proveedorDTO) throws Exception {
+    public ResponseEntity<ProveedorDTO> createProveedor(@Valid @RequestBody ProveedorDTO proveedorDTO) throws Exception {
         ProveedorDTO savedProveedor = proveedorService.save(proveedorDTO);
         return new ResponseEntity<>(savedProveedor, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProveedorDTO> updateProveedor(@PathVariable Long id, @RequestBody ProveedorDTO proveedorDTO) throws Exception {
+    public ResponseEntity<ProveedorDTO> updateProveedor(@PathVariable Long id, @Valid @RequestBody ProveedorDTO proveedorDTO) throws Exception {
         if (!id.equals(proveedorDTO.idProveedor())) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

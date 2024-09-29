@@ -39,7 +39,6 @@ public class SalidaServiceImpl implements SalidaService {
                 salida.getIdSalida(),
                 salida.getFechaSalida().toString(),
                 salida.getUsuario().getIdUsuario(),
-                salida.isEstado(),
                 detalleSalidaDTOList
         );
     }
@@ -65,6 +64,10 @@ public class SalidaServiceImpl implements SalidaService {
     @Override
     @Transactional
     public SalidaDTO save(SalidaDTO salidaDTO) throws Exception {
+        if (salidaDTO.detalleSalida() == null || salidaDTO.detalleSalida().isEmpty()) {
+            throw new IllegalArgumentException("Debe proporcionar al menos un detalle de salida.");
+        }
+
         Usuario usuario = usuarioRepository.findById(salidaDTO.idUsuario())
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
 
@@ -75,6 +78,7 @@ public class SalidaServiceImpl implements SalidaService {
 
         for (DetalleSalidaDTO detalleDTO : salidaDTO.detalleSalida()) {
             DetalleSalida detalleSalida = new DetalleSalida(detalleDTO);
+            detalleSalida.setSalida(respuesta.getIdSalida());
             detalleSalidaService.save(detalleSalida);
         }
 

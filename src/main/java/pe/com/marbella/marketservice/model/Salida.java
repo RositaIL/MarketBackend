@@ -46,6 +46,6 @@ public class Salida {
     public Salida(SalidaDTO dto) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         this.fechaSalida = LocalDate.parse(dto.fechaSalida(), formatter);
-        this.estado=dto.estado();
+        this.estado=true;
     }
 }

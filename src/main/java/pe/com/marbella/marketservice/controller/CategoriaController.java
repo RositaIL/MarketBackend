@@ -1,5 +1,6 @@
 package pe.com.marbella.marketservice.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/categoria")
+@CrossOrigin(origins = "*")
 public class CategoriaController {
     @Autowired
     private CategoriaService categoriaService;
@@ -28,13 +30,13 @@ public class CategoriaController {
     }
 
     @PostMapping
-    public ResponseEntity<CategoriaDTO> createCategoria(@RequestBody CategoriaDTO categoriaDTO) throws Exception {
+    public ResponseEntity<CategoriaDTO> createCategoria(@Valid @RequestBody CategoriaDTO categoriaDTO) throws Exception {
         CategoriaDTO savedCategoria = categoriaService.save(categoriaDTO);
         return new ResponseEntity<>(savedCategoria, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CategoriaDTO> updateCategoria(@PathVariable Long id, @RequestBody CategoriaDTO categoriaDTO) throws Exception {
+    public ResponseEntity<CategoriaDTO> updateCategoria(@PathVariable Long id, @Valid @RequestBody CategoriaDTO categoriaDTO) throws Exception {
         if (!id.equals(categoriaDTO.idCategoria())) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

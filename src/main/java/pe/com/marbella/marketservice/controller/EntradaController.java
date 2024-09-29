@@ -1,5 +1,6 @@
 package pe.com.marbella.marketservice.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,7 @@ import pe.com.marbella.marketservice.service.EntradaService;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/entrada")
 public class EntradaController {
     @Autowired
@@ -28,7 +30,7 @@ public class EntradaController {
     }
 
     @PostMapping
-    public ResponseEntity<EntradaDTO> createEntrada(@RequestBody EntradaDTO entradaDTO) throws Exception {
+    public ResponseEntity<EntradaDTO> createEntrada(@Valid @RequestBody EntradaDTO entradaDTO) throws Exception {
         EntradaDTO savedEntrada = entradaService.save(entradaDTO);
         return new ResponseEntity<>(savedEntrada, HttpStatus.CREATED);
     }

@@ -13,5 +13,4 @@ import java.util.Objects;
 public class DetalleEntradaId implements Serializable {
     private Long entrada;
     private Long producto;
-
 }

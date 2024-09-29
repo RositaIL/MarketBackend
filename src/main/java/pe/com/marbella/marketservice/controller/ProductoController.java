@@ -1,5 +1,6 @@
 package pe.com.marbella.marketservice.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,7 @@ import pe.com.marbella.marketservice.service.ProductoService;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/producto")
 public class ProductoController {
     @Autowired
@@ -28,13 +30,13 @@ public class ProductoController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductoDTO> createProducto(@RequestBody ProductoDTO productoDTO) throws Exception {
+    public ResponseEntity<ProductoDTO> createProducto(@Valid @RequestBody ProductoDTO productoDTO) throws Exception {
         ProductoDTO savedProducto = productoService.save(productoDTO);
         return new ResponseEntity<>(savedProducto, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductoDTO> updateProducto(@PathVariable Long id, @RequestBody ProductoDTO productoDTO) throws Exception {
+    public ResponseEntity<ProductoDTO> updateProducto(@PathVariable Long id, @Valid @RequestBody ProductoDTO productoDTO) throws Exception {
         if (!id.equals(productoDTO.idPro())) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

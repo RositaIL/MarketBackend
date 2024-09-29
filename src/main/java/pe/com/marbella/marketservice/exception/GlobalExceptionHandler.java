@@ -13,16 +13,22 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex, WebRequest request) {
         String requestDescription = request.getDescription(false);
-        ErrorResponse errorDetails = new ErrorResponse("Error interno del servidor", requestDescription);
+        String errorMessage = "Error interno del servidor: " + extractErrorMessage(ex);
+        ErrorResponse errorDetails = new ErrorResponse(errorMessage, requestDescription);
+
         System.out.println(ex.getMessage());
+
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleEntityNotFoundException(EntityNotFoundException ex, WebRequest request) {
         String requestDescription = request.getDescription(false);
-        ErrorResponse errorDetails = new ErrorResponse("Recurso no encontrado", requestDescription);
+        String errorMessage = "Recurso no encontrado: " + extractErrorMessage(ex);
+        ErrorResponse errorDetails = new ErrorResponse(errorMessage, requestDescription);
+
         System.out.println(ex.getMessage());
+
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
 
@@ -32,5 +38,26 @@ public class GlobalExceptionHandler {
         ex.getBindingResult().getFieldErrors().forEach(error ->
                 errors.append("\n").append(error.getField()).append(": ").append(error.getDefaultMessage()));
         return new ResponseEntity<>(errors.toString(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InsufficientStockException.class)
+    public ResponseEntity<ErrorResponse> handleInsufficientStockException(InsufficientStockException ex, WebRequest request) {
+        String requestDescription = request.getDescription(false);
+        String errorMessage = extractErrorMessage(ex);
+        ErrorResponse errorDetails = new ErrorResponse(errorMessage, requestDescription);
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex, WebRequest request) {
+        String requestDescription = request.getDescription(false);
+        String errorMessage = extractErrorMessage(ex);
+        ErrorResponse errorDetails = new ErrorResponse(errorMessage, requestDescription);
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
+    private String extractErrorMessage(Exception ex) {
+        String message = ex.getMessage();
+        return message.substring(message.indexOf(":") + 1).trim();
     }
 }

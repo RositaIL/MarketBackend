@@ -1,7 +1,6 @@
 package pe.com.marbella.marketservice.service;
 
 import pe.com.marbella.marketservice.dto.MedidaDTO;
-import pe.com.marbella.marketservice.model.Medida;
 
 import java.util.List;
 

@@ -1,7 +1,6 @@
 package pe.com.marbella.marketservice.service;
 
 import pe.com.marbella.marketservice.dto.ProveedorDTO;
-import pe.com.marbella.marketservice.model.Proveedor;
 
 import java.util.List;
 

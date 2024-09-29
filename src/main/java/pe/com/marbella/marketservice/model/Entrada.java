@@ -1,8 +1,6 @@
 package pe.com.marbella.marketservice.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
 import lombok.*;
 import pe.com.marbella.marketservice.dto.EntradaDTO;
 
@@ -24,8 +22,6 @@ public class Entrada {
     @Column(name = "id_entrada")
     private Long idEntrada;
 
-    @NotNull(message = "- La fecha de entrada es obligatoria")
-    @PastOrPresent(message = "- La fecha de entrada no puede ser futura")
     @Column(name = "fecha_entrada", nullable = false)
     private LocalDate fechaEntrada;
 
@@ -55,7 +51,7 @@ public class Entrada {
     public Entrada(EntradaDTO dto) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         this.fechaEntrada = LocalDate.parse(dto.fechaEntrada(), formatter);
-        this.estado=dto.estado();
+        this.estado=true;
     }
 }
 

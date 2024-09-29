@@ -1,11 +1,7 @@
 package pe.com.marbella.marketservice.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
 import lombok.*;
-import pe.com.marbella.marketservice.dto.UsuarioDTO;
 
 @Data
 @NoArgsConstructor
@@ -24,21 +20,15 @@ public class Usuario {
     private Long idUsuario;
 
     @Column(name = "nombres_apellidos_usu", nullable = false, length = 50)
-    @NotEmpty(message = "- Debe especificar el nombre completo del usuario")
     private String nombresApellidosUsu;
 
     @Column(name = "email_usu", nullable = false, length = 50, unique = true)
-    @NotEmpty(message = "- Debe especificar el correo electrónico")
-    @Email(message = "- Debe ser un correo electrónico válido")
     private String emailUsu;
 
     @Column(name = "login_usu", nullable = false, length = 50, unique = true)
-    @NotEmpty(message = "- Debe especificar el login de usuario")
-    @Size(min = 5, max = 15, message = "- El login de usuario debe medir entre 5 y 15 caracteres")
     private String username;
 
     @Column(name = "contrasena_usu", nullable = false, length = 255)
-    @NotEmpty(message = "- Debe especificar la contraseña")
     private String password;
 
     @ManyToOne(fetch = FetchType.LAZY)

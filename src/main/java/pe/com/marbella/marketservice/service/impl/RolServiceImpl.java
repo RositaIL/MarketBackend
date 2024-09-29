@@ -3,6 +3,7 @@ package pe.com.marbella.marketservice.service.impl;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pe.com.marbella.marketservice.dto.RolDTO;
 import pe.com.marbella.marketservice.model.Rol;
 import pe.com.marbella.marketservice.repository.RolRepository;
@@ -23,6 +24,7 @@ public class RolServiceImpl implements RolService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<RolDTO> listadoRoles() throws Exception {
         return rolRepository.findByEstado(true).stream()
                 .map(this::mapToDTO)
@@ -30,6 +32,7 @@ public class RolServiceImpl implements RolService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public RolDTO buscarRol(Long id) throws Exception {
         Rol rol = rolRepository.findByIdRolAndEstado(id, true)
                 .orElseThrow(() -> new EntityNotFoundException("Rol no encontrado"));

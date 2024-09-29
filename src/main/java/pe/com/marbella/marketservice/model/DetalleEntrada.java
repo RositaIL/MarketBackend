@@ -21,11 +21,11 @@ public class DetalleEntrada {
     private Long producto;
 
     @ManyToOne
-    @JoinColumn(name = "id_entrada", nullable = false, referencedColumnName = "id_entrada")
+    @JoinColumn(name = "id_entrada", nullable = false, referencedColumnName = "id_entrada",insertable = false, updatable = false)
     private Entrada entradaEntity;
 
     @ManyToOne
-    @JoinColumn(name = "id_pro", nullable = false)
+    @JoinColumn(name = "id_pro", nullable = false,insertable = false, updatable = false)
     private Producto productoEntity;
 
     @Column(name = "cantidad", nullable = false)
