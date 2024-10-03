@@ -1,7 +1,6 @@
 package pe.com.marbella.marketservice.dto;
 
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
 
 import java.util.List;
 
