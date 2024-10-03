@@ -31,7 +31,7 @@ public class Usuario {
     @Column(name = "contrasena_usu", nullable = false, length = 255)
     private String password;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_rol", nullable = false)
     private Rol rol;
 
