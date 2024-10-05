@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pe.com.marbella.marketservice.dto.SalidaDTO;
 import pe.com.marbella.marketservice.service.SalidaService;
@@ -35,6 +36,7 @@ public class SalidaController {
         return new ResponseEntity<>(savedSalida, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSalida(@PathVariable Long id) throws Exception {
         salidaService.delete(id);

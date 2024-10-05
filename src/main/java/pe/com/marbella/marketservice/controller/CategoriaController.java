@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pe.com.marbella.marketservice.dto.CategoriaDTO;
 import pe.com.marbella.marketservice.service.CategoriaService;
@@ -35,6 +36,7 @@ public class CategoriaController {
         return new ResponseEntity<>(savedCategoria, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PutMapping("/{id}")
     public ResponseEntity<CategoriaDTO> updateCategoria(@PathVariable Long id, @Valid @RequestBody CategoriaDTO categoriaDTO) throws Exception {
         if (!id.equals(categoriaDTO.idCategoria())) {
@@ -45,6 +47,7 @@ public class CategoriaController {
         return new ResponseEntity<>(updatedCategoria, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategoria(@PathVariable Long id) throws Exception {
         categoriaService.delete(id);
