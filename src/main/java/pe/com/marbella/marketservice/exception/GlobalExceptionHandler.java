@@ -88,7 +88,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException ex, WebRequest request) {
         String requestDescription = request.getDescription(false);
-        String errorMessage = "Credenciales inválidas: " + extractErrorMessage(ex);
+        String errorMessage = "Credenciales inválidas.";
         ErrorResponse errorDetails = new ErrorResponse(errorMessage, requestDescription);
 
         System.out.println(ex.getMessage());

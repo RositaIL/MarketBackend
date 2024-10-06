@@ -2,10 +2,8 @@ package pe.com.marbella.marketservice.JWT;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
 
@@ -31,13 +29,13 @@ public class JwtUtil {
 
         return Jwts.builder()
                 .claims(extraClaims)
-                .claim("rol", rol) // Solo agregas el nombre del rol directamente
+                .claim("rol", rol)
                 .subject(usuario.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
                 .signWith(getKey())
                 .compact();
-}
+    }
 
     private SecretKey getKey() {
        byte[] keyBytes=Decoders.BASE64.decode(SECRET_KEY);
@@ -58,6 +56,7 @@ public class JwtUtil {
         return Jwts
             .parser()
             .verifyWith(getKey())
+            .clockSkewSeconds(30)
             .build()
             .parseSignedClaims(token)
             .getPayload();

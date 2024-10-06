@@ -22,17 +22,17 @@ public class AuthService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Usuario usuario = usuarioRepository.findUsuarioByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+            .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado con el nombre de usuario: " + username));
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + usuario.getRol().getNombreRol());
 
         return new User(
             usuario.getUsername(),
             usuario.getPassword(),
-            usuario.isEstado(), // Usuario esta activo
-            true,               // accountNonExpired
-            true,               // credentialsNonExpired
-            true,               // accountNonLocked
-            List.of(authority)  // Rol a autoridades
+            usuario.isEstado(), //Usuario esta activo
+            true,               //accountNonExpired
+            true,               //credentialsNonExpired
+            true,               //accountNonLocked
+            List.of(authority)  //Rol a autoridades
         );
     }
 
