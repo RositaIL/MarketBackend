@@ -8,7 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 @Entity
 @Table(name = "tb_usuario", uniqueConstraints= {
-        @UniqueConstraint(columnNames = {"nombres_apellidos_usu"}),
         @UniqueConstraint(columnNames = {"login_usu"}),
         @UniqueConstraint(columnNames = {"email_usu"})
 })

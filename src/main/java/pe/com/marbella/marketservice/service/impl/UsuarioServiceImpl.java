@@ -1,10 +1,12 @@
 package pe.com.marbella.marketservice.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pe.com.marbella.marketservice.dto.UsuarioDTO;
+import pe.com.marbella.marketservice.dto.UsuarioResponseDTO;
 import pe.com.marbella.marketservice.model.Rol;
 import pe.com.marbella.marketservice.model.Usuario;
 import pe.com.marbella.marketservice.repository.RolRepository;
@@ -12,6 +14,7 @@ import pe.com.marbella.marketservice.repository.UsuarioRepository;
 import pe.com.marbella.marketservice.service.UsuarioService;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,14 +23,15 @@ public class UsuarioServiceImpl implements UsuarioService {
     UsuarioRepository usuarioRepository;
     @Autowired
     RolRepository rolRepository;
+    @Autowired
+    private PasswordEncoder codificador;
 
-    private UsuarioDTO mapToDTO(Usuario usuario) {
-        return new UsuarioDTO(
+    private UsuarioResponseDTO mapToDTO(Usuario usuario) {
+        return new UsuarioResponseDTO(
                 usuario.getIdUsuario(),
                 usuario.getNombresApellidosUsu(),
                 usuario.getEmailUsu(),
                 usuario.getUsername(),
-                usuario.getPassword(),
                 usuario.getRol().getIdRol()
         );
     }
@@ -49,7 +53,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<UsuarioDTO> findAll() throws Exception {
+    public List<UsuarioResponseDTO> findAll() throws Exception {
         return usuarioRepository.findByEstado(true).stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
@@ -57,7 +61,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     @Transactional(readOnly = true)
-    public UsuarioDTO findById(Long id) throws Exception {
+    public UsuarioResponseDTO findById(Long id) throws Exception {
         Usuario usuario = usuarioRepository.findByIdUsuarioAndEstado(id, true)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
         return mapToDTO(usuario);
@@ -65,24 +69,49 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     @Transactional
-    public UsuarioDTO save(UsuarioDTO usuarioDTO) throws Exception {
+    public UsuarioResponseDTO save(UsuarioDTO usuarioDTO) throws Exception {
+        Optional<Usuario> usuarioInactivoOpt = usuarioRepository.findUsuarioByEmailUsuAndEstado(usuarioDTO.emailUsu(), false);
         Rol rol = getRole(usuarioDTO.idRol());
-        Usuario newUsuario = mapToEntity(usuarioDTO,rol);
-        Usuario savedUsuario = usuarioRepository.save(newUsuario);
-        return mapToDTO(savedUsuario);
+        if (usuarioInactivoOpt.isPresent()) {
+            Usuario usuarioInactivo = usuarioInactivoOpt.get();
+            usuarioInactivo.setNombresApellidosUsu(usuarioDTO.nombresApellidosUsu());
+            usuarioInactivo.setEmailUsu(usuarioDTO.emailUsu());
+            usuarioInactivo.setUsername(usuarioDTO.username());
+            usuarioInactivo.setPassword(codificador.encode(usuarioDTO.password()));
+            usuarioInactivo.setRol(rol);
+            usuarioInactivo.setEstado(true);
+
+            Usuario updatedUsuario = usuarioRepository.save(usuarioInactivo);
+            return mapToDTO(updatedUsuario);
+        } else {
+            Usuario newUsuario = mapToEntity(usuarioDTO, rol);
+            newUsuario.setPassword(codificador.encode(usuarioDTO.password()));
+            Usuario savedUsuario = usuarioRepository.save(newUsuario);
+            return mapToDTO(savedUsuario);
+        }
     }
 
     @Override
     @Transactional
-    public UsuarioDTO update(UsuarioDTO usuarioDTO) throws Exception {
+    public UsuarioResponseDTO update(UsuarioDTO usuarioDTO) throws Exception {
         Usuario usuario = usuarioRepository.findById(usuarioDTO.idUsuario())
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
-        usuario.setNombresApellidosUsu(usuarioDTO.nombresApellidosUsu());
-        usuario.setEmailUsu(usuarioDTO.emailUsu());
-        usuario.setUsername(usuarioDTO.username());
-        usuario.setPassword(usuarioDTO.password());
-        Rol rol = getRole(usuarioDTO.idRol());
-        usuario.setRol(rol);
+        if (usuarioDTO.nombresApellidosUsu() != null && !usuarioDTO.nombresApellidosUsu().trim().isEmpty()) {
+            usuario.setNombresApellidosUsu(usuarioDTO.nombresApellidosUsu());
+        }
+        if (usuarioDTO.emailUsu() != null && !usuarioDTO.emailUsu().trim().isEmpty()) {
+            usuario.setEmailUsu(usuarioDTO.emailUsu());
+        }
+        if (usuarioDTO.username() != null && !usuarioDTO.username().trim().isEmpty()) {
+            usuario.setUsername(usuarioDTO.username());
+        }
+        if (usuarioDTO.password() != null && !usuarioDTO.password().trim().isEmpty()) {
+            usuario.setPassword(codificador.encode(usuarioDTO.password()));
+        }
+        if (usuarioDTO.idRol() != null) {
+            Rol rol = getRole(usuarioDTO.idRol());
+            usuario.setRol(rol);
+        }
         return mapToDTO(usuarioRepository.save(usuario));
     }
 

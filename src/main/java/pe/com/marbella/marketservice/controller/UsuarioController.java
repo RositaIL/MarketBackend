@@ -1,12 +1,15 @@
 package pe.com.marbella.marketservice.controller;
 
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pe.com.marbella.marketservice.dto.UsuarioDTO;
+import pe.com.marbella.marketservice.dto.UsuarioResponseDTO;
+import pe.com.marbella.marketservice.dto.validation.OnCreate;
+import pe.com.marbella.marketservice.dto.validation.OnUpdate;
 import pe.com.marbella.marketservice.service.UsuarioService;
 
 import java.util.List;
@@ -20,29 +23,29 @@ public class UsuarioController {
     private UsuarioService usuarioService;
 
     @GetMapping
-    public ResponseEntity<List<UsuarioDTO>> obtenerUsuarios() throws Exception {
-        List<UsuarioDTO> usuarios = usuarioService.findAll();
+    public ResponseEntity<List<UsuarioResponseDTO>> obtenerUsuarios() throws Exception {
+        List<UsuarioResponseDTO> usuarios = usuarioService.findAll();
         return new ResponseEntity<>(usuarios, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UsuarioDTO> obtenerUsuarioPorId(@PathVariable Long id) throws Exception {
-        UsuarioDTO usuarioDTO = usuarioService.findById(id);
+    public ResponseEntity<UsuarioResponseDTO> obtenerUsuarioPorId(@PathVariable Long id) throws Exception {
+        UsuarioResponseDTO usuarioDTO = usuarioService.findById(id);
         return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<UsuarioDTO> crearUsuario(@Valid @RequestBody UsuarioDTO usuarioDTO) throws Exception {
-        UsuarioDTO nuevoUsuario = usuarioService.save(usuarioDTO);
+    public ResponseEntity<UsuarioResponseDTO> crearUsuario(@Validated(OnCreate.class) @RequestBody UsuarioDTO usuarioDTO) throws Exception {
+        UsuarioResponseDTO nuevoUsuario = usuarioService.save(usuarioDTO);
         return new ResponseEntity<>(nuevoUsuario, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UsuarioDTO> actualizarUsuario(@PathVariable Long id, @Valid @RequestBody UsuarioDTO usuarioDTO) throws Exception {
+    public ResponseEntity<UsuarioResponseDTO> actualizarUsuario(@PathVariable Long id, @Validated(OnUpdate.class) @RequestBody UsuarioDTO usuarioDTO) throws Exception {
         if (!id.equals(usuarioDTO.idUsuario())) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        UsuarioDTO usuarioActualizado = usuarioService.update(usuarioDTO);
+        UsuarioResponseDTO usuarioActualizado = usuarioService.update(usuarioDTO);
         return new ResponseEntity<>(usuarioActualizado, HttpStatus.OK);
     }
 

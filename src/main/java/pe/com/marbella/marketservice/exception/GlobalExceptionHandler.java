@@ -2,8 +2,10 @@ package pe.com.marbella.marketservice.exception;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -20,7 +22,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex, WebRequest request) {
         String requestDescription = request.getDescription(false);
-        String errorMessage = "Error interno del servidor: " + extractErrorMessage(ex);
+        String errorMessage = "Error interno del servidor";
         ErrorResponse errorDetails = new ErrorResponse(errorMessage, requestDescription);
 
         System.out.println(ex.getMessage());
@@ -60,6 +62,17 @@ public class GlobalExceptionHandler {
         String requestDescription = request.getDescription(false);
         String errorMessage = extractErrorMessage(ex);
         ErrorResponse errorDetails = new ErrorResponse(errorMessage, requestDescription);
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, WebRequest request) {
+        String errorMessage = "La solicitud no contiene el cuerpo requerido o el formato es incorrecto.";
+        String requestDescription = request.getDescription(false);
+        ErrorResponse errorDetails = new ErrorResponse(errorMessage, requestDescription);
+
+        System.out.println(ex.getMessage());
+
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
@@ -116,6 +129,23 @@ public class GlobalExceptionHandler {
         System.out.println(ex.getMessage());
 
         return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(DataIntegrityViolationException ex, WebRequest request) {
+        String requestDescription = request.getDescription(false);
+        String mensajeError = "Error de integridad de datos: " + obtenerMensajeError(ex.getMessage());
+        ErrorResponse errorDetails = new ErrorResponse(mensajeError, requestDescription);
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.CONFLICT);
+    }
+
+    private String obtenerMensajeError(String mensajeOriginal) {
+        if (mensajeOriginal.contains("Duplicate entry")) {
+            String valorDuplicado = mensajeOriginal.split("'")[1];
+            return "El valor ingresado '" + valorDuplicado + "' ya existe.";
+        }
+        return mensajeOriginal;
     }
 
     private String extractErrorMessage(Exception ex) {
