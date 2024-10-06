@@ -1,12 +1,19 @@
 package pe.com.marbella.marketservice.exception;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
+
+import java.security.SignatureException;
+import java.util.Objects;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -54,6 +61,61 @@ public class GlobalExceptionHandler {
         String errorMessage = extractErrorMessage(ex);
         ErrorResponse errorDetails = new ErrorResponse(errorMessage, requestDescription);
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex, WebRequest request) {
+        String requestDescription = request.getDescription(false);
+        String errorMessage = "Tipo de argumento no válido: " + ex.getName() + ". Se esperaba un valor de tipo " + Objects.requireNonNull(ex.getRequiredType()).getSimpleName() + ".";
+        ErrorResponse errorDetails = new ErrorResponse(errorMessage, requestDescription);
+
+        System.out.println(ex.getMessage());
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNoResourceFoundException(NoResourceFoundException ex, WebRequest request) {
+        String requestDescription = request.getDescription(false);
+        String errorMessage = "No se encontró el recurso solicitado: " + ex.getMessage();
+        ErrorResponse errorDetails = new ErrorResponse(errorMessage, requestDescription);
+
+        System.out.println(ex.getMessage());
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException ex, WebRequest request) {
+        String requestDescription = request.getDescription(false);
+        String errorMessage = "Credenciales inválidas: " + extractErrorMessage(ex);
+        ErrorResponse errorDetails = new ErrorResponse(errorMessage, requestDescription);
+
+        System.out.println(ex.getMessage());
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<ErrorResponse> handleExpiredJwtException(ExpiredJwtException ex, WebRequest request) {
+        String requestDescription = request.getDescription(false);
+        String errorMessage = "El token ha expirado.";
+        ErrorResponse errorDetails = new ErrorResponse(errorMessage, requestDescription);
+
+        System.out.println(ex.getMessage());
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(SignatureException.class)
+    public ResponseEntity<ErrorResponse> handleSignatureException(SignatureException ex, WebRequest request) {
+        String requestDescription = request.getDescription(false);
+        String errorMessage = "La firma del token es inválida.";
+        ErrorResponse errorDetails = new ErrorResponse(errorMessage, requestDescription);
+
+        System.out.println(ex.getMessage());
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
     }
 
     private String extractErrorMessage(Exception ex) {
