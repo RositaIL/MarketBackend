@@ -30,10 +30,10 @@ public class AuthController {
     @PostMapping("/login")
     public String createToken(@RequestBody AuthLogin authRequest) throws Exception {
         authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
+            new UsernamePasswordAuthenticationToken(authRequest.username(), authRequest.password())
         );
 
-        final Usuario user = userRepository.findUsuarioByUsername(authRequest.getUsername()).orElseThrow();
+        final Usuario user = userRepository.findUsuarioByUsername(authRequest.username()).orElseThrow();
         return jwtUtil.getToken(user);
     }
 }
