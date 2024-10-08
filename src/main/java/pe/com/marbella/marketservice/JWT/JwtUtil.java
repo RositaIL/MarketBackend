@@ -29,6 +29,9 @@ public class JwtUtil {
 
         return Jwts.builder()
                 .claims(extraClaims)
+                .claim("userID", usuario.getIdUsuario())
+                .claim("nombre", usuario.getNombresApellidosUsu())
+                .claim("correo", usuario.getEmailUsu())
                 .claim("rol", rol)
                 .subject(usuario.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
