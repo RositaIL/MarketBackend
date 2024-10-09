@@ -1,6 +1,7 @@
 package pe.com.marbella.marketservice.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +11,7 @@ import pe.com.marbella.marketservice.model.Medida;
 import pe.com.marbella.marketservice.repository.MedidaRepository;
 import pe.com.marbella.marketservice.service.MedidaService;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class MedidaServiceImpl implements MedidaService {
@@ -31,10 +30,9 @@ public class MedidaServiceImpl implements MedidaService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<MedidaDTO> findAll(Pageable pageable) throws Exception {
-        return medidaRepository.findByEstado(true, pageable).stream()
-                .map(this::mapToDTO)
-                .collect(Collectors.toList());
+    public Page<MedidaDTO> findAll(Pageable pageable) throws Exception {
+        return medidaRepository.findByEstado(true, pageable)
+                .map(this::mapToDTO);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package pe.com.marbella.marketservice.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -15,9 +16,6 @@ import pe.com.marbella.marketservice.repository.MarcaRepository;
 import pe.com.marbella.marketservice.repository.MedidaRepository;
 import pe.com.marbella.marketservice.repository.ProductoRepository;
 import pe.com.marbella.marketservice.service.ProductoService;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductoServiceImpl implements ProductoService {
@@ -73,16 +71,16 @@ public class ProductoServiceImpl implements ProductoService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ProductoDTO> findAll(Pageable pageable) throws Exception{
-        List<Producto> productos = productoRepository.findByEstado(true,pageable);
-        return productos.stream().map(this::mapToDTO).collect(Collectors.toList());
+    public Page<ProductoDTO> findAll(Pageable pageable) throws Exception{
+        return productoRepository.findByEstado(true,pageable)
+                .map(this::mapToDTO);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<ProductoDTO> findAllByCategoria(Long categoria, Pageable pageable) throws Exception{
-        List<Producto> productos = productoRepository.findAllByCategoria_IdCategoriaAndEstado(categoria,true,pageable);
-        return productos.stream().map(this::mapToDTO).collect(Collectors.toList());
+    public Page<ProductoDTO> findAllByCategoria(Long categoria, Pageable pageable) throws Exception{
+        return productoRepository.findAllByCategoria_IdCategoriaAndEstado(categoria,true,pageable)
+                .map(this::mapToDTO);
     }
 
     @Override

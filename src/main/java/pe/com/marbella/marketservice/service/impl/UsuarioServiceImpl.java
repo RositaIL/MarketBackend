@@ -1,6 +1,7 @@
 package pe.com.marbella.marketservice.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,9 +15,7 @@ import pe.com.marbella.marketservice.repository.RolRepository;
 import pe.com.marbella.marketservice.repository.UsuarioRepository;
 import pe.com.marbella.marketservice.service.UsuarioService;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
@@ -54,10 +53,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<UsuarioResponseDTO> findAll(Pageable pageable) throws Exception {
-        return usuarioRepository.findByEstado(true, pageable).stream()
-                .map(this::mapToDTO)
-                .collect(Collectors.toList());
+    public Page<UsuarioResponseDTO> findAll(Pageable pageable) throws Exception {
+        return usuarioRepository.findByEstado(true, pageable)
+                .map(this::mapToDTO);
     }
 
     @Override

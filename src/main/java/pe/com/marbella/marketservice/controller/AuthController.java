@@ -3,10 +3,7 @@ package pe.com.marbella.marketservice.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import pe.com.marbella.marketservice.JWT.JwtUtil;
 import pe.com.marbella.marketservice.dto.AuthLogin;
@@ -14,6 +11,7 @@ import pe.com.marbella.marketservice.model.Usuario;
 import pe.com.marbella.marketservice.repository.UsuarioRepository;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/auth")
 public class AuthController {
 

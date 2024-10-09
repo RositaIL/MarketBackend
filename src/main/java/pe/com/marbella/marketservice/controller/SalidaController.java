@@ -1,7 +1,7 @@
 package pe.com.marbella.marketservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +12,6 @@ import pe.com.marbella.marketservice.dto.SalidaDTO;
 import pe.com.marbella.marketservice.dto.validation.OnCreate;
 import pe.com.marbella.marketservice.service.SalidaService;
 
-import java.util.List;
-
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/salida")
@@ -22,10 +20,8 @@ public class SalidaController {
     private SalidaService salidaService;
 
     @GetMapping
-    public ResponseEntity<List<SalidaDTO>> getAllSalidas(@RequestParam(defaultValue = "0") int page,
-    @RequestParam(defaultValue = "10") int size) throws Exception {
-        Pageable pageable = PageRequest.of(page, size);
-        List<SalidaDTO> salidas = salidaService.findAll(pageable);
+    public ResponseEntity<Page<SalidaDTO>> getAllSalidas(Pageable pageable) throws Exception {
+        Page<SalidaDTO> salidas = salidaService.findAll(pageable);
         return new ResponseEntity<>(salidas, HttpStatus.OK);
     }
 

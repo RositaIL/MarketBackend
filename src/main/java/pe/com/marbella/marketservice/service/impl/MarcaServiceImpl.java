@@ -1,6 +1,7 @@
 package pe.com.marbella.marketservice.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +12,7 @@ import pe.com.marbella.marketservice.model.Marca;
 import pe.com.marbella.marketservice.repository.MarcaRepository;
 import pe.com.marbella.marketservice.service.MarcaService;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Validated
@@ -35,10 +34,9 @@ public class MarcaServiceImpl implements MarcaService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<MarcaDTO> findAll(Pageable pageable) throws Exception {
-        return marcaRepository.findByEstado(true, pageable).stream()
-                .map(this::mapToDTO)
-                .collect(Collectors.toList());
+    public Page<MarcaDTO> findAll(Pageable pageable) throws Exception {
+        return marcaRepository.findByEstado(true, pageable)
+                .map(this::mapToDTO);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package pe.com.marbella.marketservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +14,6 @@ import pe.com.marbella.marketservice.dto.validation.OnCreate;
 import pe.com.marbella.marketservice.dto.validation.OnUpdate;
 import pe.com.marbella.marketservice.service.UsuarioService;
 
-import java.util.List;
-
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/usuario")
@@ -25,10 +23,8 @@ public class UsuarioController {
     private UsuarioService usuarioService;
 
     @GetMapping
-    public ResponseEntity<List<UsuarioResponseDTO>> obtenerUsuarios(@RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size) throws Exception {
-        Pageable pageable = PageRequest.of(page, size);
-        List<UsuarioResponseDTO> usuarios = usuarioService.findAll(pageable);
+    public ResponseEntity<Page<UsuarioResponseDTO>> obtenerUsuarios(Pageable pageable) throws Exception {
+        Page<UsuarioResponseDTO> usuarios = usuarioService.findAll(pageable);
         return new ResponseEntity<>(usuarios, HttpStatus.OK);
     }
 

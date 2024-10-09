@@ -1,7 +1,7 @@
 package pe.com.marbella.marketservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +13,6 @@ import pe.com.marbella.marketservice.dto.validation.OnCreate;
 import pe.com.marbella.marketservice.dto.validation.OnUpdate;
 import pe.com.marbella.marketservice.service.ProveedorService;
 
-import java.util.List;
-
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/proveedor")
@@ -24,10 +22,8 @@ public class ProveedorController {
 
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @GetMapping
-    public ResponseEntity<List<ProveedorDTO>> getAllProveedores(@RequestParam(defaultValue = "0") int page,
-    @RequestParam(defaultValue = "10") int size) throws Exception {
-        Pageable pageable = PageRequest.of(page, size);
-        List<ProveedorDTO> proveedores = proveedorService.findAll(pageable);
+    public ResponseEntity<Page<ProveedorDTO>> getAllProveedores(Pageable pageable) throws Exception {
+        Page<ProveedorDTO> proveedores = proveedorService.findAll(pageable);
         return new ResponseEntity<>(proveedores, HttpStatus.OK);
     }
 
