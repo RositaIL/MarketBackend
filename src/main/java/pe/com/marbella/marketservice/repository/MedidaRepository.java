@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface MedidaRepository extends JpaRepository<Medida, Long> {
     List<Medida> findByEstado(boolean estado);
     Optional<Medida> findByIdMedidaAndEstado(Long idMedida, boolean estado);
+    Optional<Medida> findMedidaByNombreMedidaIgnoreCaseAndEstado(String nombreMedida, boolean estado);
 }

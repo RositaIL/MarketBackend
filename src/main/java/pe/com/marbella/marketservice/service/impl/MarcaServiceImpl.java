@@ -11,6 +11,7 @@ import pe.com.marbella.marketservice.repository.MarcaRepository;
 import pe.com.marbella.marketservice.service.MarcaService;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,6 +51,14 @@ public class MarcaServiceImpl implements MarcaService {
     @Override
     @Transactional
     public MarcaDTO save(MarcaDTO marcaDTO) throws Exception {
+        Optional<Marca> inactiveMarca = marcaRepository.findMarcaByNombreMarcaIgnoreCaseAndEstado(marcaDTO.nombreMarca(),false);
+
+        if (inactiveMarca.isPresent()) {
+            Marca marca = inactiveMarca.get();
+            marca.setEstado(true);
+            Marca updatedMarca = marcaRepository.save(marca);
+            return mapToDTO(updatedMarca);
+        }
         Marca newMarca = mapToEntity(marcaDTO);
         Marca savedMarca = marcaRepository.save(newMarca);
         return mapToDTO(savedMarca);
@@ -60,7 +69,9 @@ public class MarcaServiceImpl implements MarcaService {
     public MarcaDTO update(MarcaDTO marcaDTO) throws Exception {
         Marca marca = marcaRepository.findById(marcaDTO.idMarca())
                 .orElseThrow(() -> new EntityNotFoundException("Marca no encontrada"));
-        marca.setNombreMarca(marcaDTO.nombreMarca());
+        if(marcaDTO.nombreMarca() != null && !marcaDTO.nombreMarca().trim().isEmpty()){
+            marca.setNombreMarca(marcaDTO.nombreMarca());
+        }
         return mapToDTO(marcaRepository.save(marca));
     }
 

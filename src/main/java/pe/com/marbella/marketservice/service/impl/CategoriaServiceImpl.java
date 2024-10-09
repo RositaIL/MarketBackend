@@ -11,6 +11,7 @@ import pe.com.marbella.marketservice.repository.CategoriaRepository;
 import pe.com.marbella.marketservice.service.CategoriaService;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,6 +50,13 @@ public class CategoriaServiceImpl implements CategoriaService {
     @Override
     @Transactional
     public CategoriaDTO save(CategoriaDTO categoriaDTO) throws Exception{
+        Optional<Categoria> inactiveCategoria = categoriaRepository.findCategoriaByNombreCategoriaIgnoreCaseAndEstado(categoriaDTO.nombreCategoria(),false);
+        if (inactiveCategoria.isPresent()) {
+            Categoria categoria = inactiveCategoria.get();
+            categoria.setEstado(true);
+            Categoria updatedCategoria = categoriaRepository.save(categoria);
+            return mapToDTO(updatedCategoria);
+        }
         Categoria newCategoria = mapToEntity(categoriaDTO);
         Categoria respuesta = categoriaRepository.save(newCategoria);
         return mapToDTO(respuesta);
@@ -59,7 +67,9 @@ public class CategoriaServiceImpl implements CategoriaService {
     public CategoriaDTO update(CategoriaDTO categoriaDTO) throws Exception{
         Categoria categoria = categoriaRepository.findById(categoriaDTO.idCategoria())
                 .orElseThrow(() -> new EntityNotFoundException("Categoría no encontrada"));
-        categoria.setNombreCategoria(categoriaDTO.nombreCategoria());
+        if(categoriaDTO.nombreCategoria() != null && !categoriaDTO.nombreCategoria().trim().isEmpty()){
+            categoria.setNombreCategoria(categoriaDTO.nombreCategoria());
+        }
         return mapToDTO(categoriaRepository.save(categoria));
     }
 

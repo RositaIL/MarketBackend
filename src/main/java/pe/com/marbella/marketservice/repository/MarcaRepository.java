@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface MarcaRepository extends JpaRepository<Marca, Long> {
     List<Marca> findByEstado(boolean estado);
     Optional<Marca> findByIdMarcaAndEstado(Long idMarca, boolean estado);
+    Optional<Marca> findMarcaByNombreMarcaIgnoreCaseAndEstado(String nombreMarca, boolean estado);
 }

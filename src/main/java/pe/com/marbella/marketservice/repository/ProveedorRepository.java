@@ -13,5 +13,6 @@ import java.util.Optional;
 public interface ProveedorRepository extends JpaRepository<Proveedor, Long> {
     List<Proveedor> findByEstado(boolean estado, Pageable pageable);
     Optional<Proveedor> findByIdProveedorAndEstado(Long IdProv, boolean estado);
+    Optional<Proveedor> findProveedorByRucProvAndEstado(String rucProv, boolean estado);
 }
 

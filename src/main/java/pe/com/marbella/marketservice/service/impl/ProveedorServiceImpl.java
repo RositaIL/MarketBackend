@@ -11,6 +11,7 @@ import pe.com.marbella.marketservice.repository.ProveedorRepository;
 import pe.com.marbella.marketservice.service.ProveedorService;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,6 +54,15 @@ public class ProveedorServiceImpl implements ProveedorService {
     @Override
     @Transactional
     public ProveedorDTO save(ProveedorDTO proveedorDTO) throws Exception {
+        Optional<Proveedor> inactiveProveedor = proveedorRepository.findProveedorByRucProvAndEstado(proveedorDTO.rucProv(), false);
+
+        if (inactiveProveedor.isPresent()) {
+            Proveedor proveedor = inactiveProveedor.get();
+            proveedor.setEstado(true);
+            Proveedor updatedProveedor = proveedorRepository.save(proveedor);
+            return mapToDTO(updatedProveedor);
+        }
+
         Proveedor newProveedor = mapToEntity(proveedorDTO);
         Proveedor respuesta = proveedorRepository.save(newProveedor);
         return mapToDTO(respuesta);
@@ -64,12 +74,24 @@ public class ProveedorServiceImpl implements ProveedorService {
         Proveedor proveedor = proveedorRepository.findById(proveedorDTO.idProveedor())
                 .orElseThrow(() -> new EntityNotFoundException("Proveedor no encontrado"));
 
-        proveedor.setNombreProv(proveedorDTO.nombreProv());
-        proveedor.setDireccProv(proveedorDTO.direccProv());
-        proveedor.setTelefProv(proveedorDTO.telefProv());
-        proveedor.setRucProv(proveedorDTO.rucProv());
-        proveedor.setEmailProv(proveedorDTO.emailProv());
-        proveedor.setNomRepresentante(proveedor.getNomRepresentante());
+        if (proveedorDTO.nombreProv() != null && !proveedorDTO.nombreProv().trim().isEmpty()) {
+            proveedor.setNombreProv(proveedorDTO.nombreProv());
+        }
+        if (proveedorDTO.direccProv() != null && !proveedorDTO.direccProv().trim().isEmpty()) {
+            proveedor.setDireccProv(proveedorDTO.direccProv());
+        }
+        if (proveedorDTO.telefProv() != null && !proveedorDTO.telefProv().trim().isEmpty()) {
+            proveedor.setTelefProv(proveedorDTO.telefProv());
+        }
+        if (proveedorDTO.rucProv() != null && !proveedorDTO.rucProv().trim().isEmpty()) {
+            proveedor.setRucProv(proveedorDTO.rucProv());
+        }
+        if (proveedorDTO.emailProv() != null && !proveedorDTO.emailProv().trim().isEmpty()) {
+            proveedor.setEmailProv(proveedorDTO.emailProv());
+        }
+        if (proveedorDTO.nomRepresentante() != null && !proveedorDTO.nomRepresentante().trim().isEmpty()) {
+            proveedor.setNomRepresentante(proveedorDTO.nomRepresentante());
+        }
 
         return mapToDTO(proveedorRepository.save(proveedor));
     }

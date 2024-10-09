@@ -70,7 +70,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     @Transactional
     public UsuarioResponseDTO save(UsuarioDTO usuarioDTO) throws Exception {
-        Optional<Usuario> usuarioInactivoOpt = usuarioRepository.findUsuarioByEmailUsuAndEstado(usuarioDTO.emailUsu(), false);
+        Optional<Usuario> usuarioInactivoOpt = usuarioRepository.findUsuarioByEmailUsuIgnoreCaseAndEstado(usuarioDTO.emailUsu(), false);
         Rol rol = getRole(usuarioDTO.idRol());
         if (usuarioInactivoOpt.isPresent()) {
             Usuario usuarioInactivo = usuarioInactivoOpt.get();

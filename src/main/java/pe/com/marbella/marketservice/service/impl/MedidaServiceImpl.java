@@ -10,6 +10,7 @@ import pe.com.marbella.marketservice.repository.MedidaRepository;
 import pe.com.marbella.marketservice.service.MedidaService;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,6 +47,14 @@ public class MedidaServiceImpl implements MedidaService {
     @Override
     @Transactional
     public MedidaDTO save(MedidaDTO medidaDTO) throws Exception {
+        Optional<Medida> inactiveMedida = medidaRepository.findMedidaByNombreMedidaIgnoreCaseAndEstado(medidaDTO.nombreMedida(),false);
+
+        if (inactiveMedida.isPresent()) {
+            Medida medida = inactiveMedida.get();
+            medida.setEstado(true);
+            Medida updatedMedida = medidaRepository.save(medida);
+            return mapToDTO(updatedMedida);
+        }
         Medida newMedida = mapToEntity(medidaDTO);
         Medida savedMedida = medidaRepository.save(newMedida);
         return mapToDTO(savedMedida);
@@ -56,7 +65,9 @@ public class MedidaServiceImpl implements MedidaService {
     public MedidaDTO update(MedidaDTO medidaDTO) throws Exception {
         Medida medida = medidaRepository.findById(medidaDTO.idMedida())
                 .orElseThrow(() -> new EntityNotFoundException("Medida no encontrada"));
-        medida.setNombreMedida(medidaDTO.nombreMedida());
+        if(medidaDTO.nombreMedida() != null && !medidaDTO.nombreMedida().trim().isEmpty()){
+            medida.setNombreMedida(medidaDTO.nombreMedida());
+        }
         return mapToDTO(medidaRepository.save(medida));
     }
 

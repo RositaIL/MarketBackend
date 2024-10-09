@@ -11,5 +11,5 @@ import java.util.Optional;
 public interface CategoriaRepository extends JpaRepository<Categoria, Long> {
     List<Categoria> findByEstado(boolean estado);
     Optional<Categoria> findByIdCategoriaAndEstado(Long idCategoria, boolean estado);
-
+    Optional<Categoria> findCategoriaByNombreCategoriaIgnoreCaseAndEstado(String nombreCategoria, boolean estado);
 }
