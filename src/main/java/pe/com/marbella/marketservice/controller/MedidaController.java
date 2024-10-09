@@ -1,12 +1,14 @@
 package pe.com.marbella.marketservice.controller;
 
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pe.com.marbella.marketservice.dto.MedidaDTO;
+import pe.com.marbella.marketservice.dto.validation.OnCreate;
+import pe.com.marbella.marketservice.dto.validation.OnUpdate;
 import pe.com.marbella.marketservice.service.MedidaService;
 
 import java.util.List;
@@ -32,14 +34,14 @@ public class MedidaController {
 
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PostMapping
-    public ResponseEntity<MedidaDTO> createMedida(@Valid @RequestBody MedidaDTO medidaDTO) throws Exception {
+    public ResponseEntity<MedidaDTO> createMedida(@Validated(OnCreate.class) @RequestBody MedidaDTO medidaDTO) throws Exception {
         MedidaDTO savedMedida = medidaService.save(medidaDTO);
         return new ResponseEntity<>(savedMedida, HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PutMapping("/{id}")
-    public ResponseEntity<MedidaDTO> updateMedida(@PathVariable Long id,@Valid @RequestBody MedidaDTO medidaDTO) throws Exception {
+    public ResponseEntity<MedidaDTO> updateMedida(@PathVariable Long id,@Validated(OnUpdate.class) @RequestBody MedidaDTO medidaDTO) throws Exception {
         if (!id.equals(medidaDTO.idMedida())) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

@@ -1,12 +1,13 @@
 package pe.com.marbella.marketservice.controller;
 
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pe.com.marbella.marketservice.dto.EntradaDTO;
+import pe.com.marbella.marketservice.dto.validation.OnCreate;
 import pe.com.marbella.marketservice.service.EntradaService;
 
 import java.util.List;
@@ -31,7 +32,7 @@ public class EntradaController {
     }
 
     @PostMapping
-    public ResponseEntity<EntradaDTO> createEntrada(@Valid @RequestBody EntradaDTO entradaDTO) throws Exception {
+    public ResponseEntity<EntradaDTO> createEntrada(@Validated(OnCreate.class) @RequestBody EntradaDTO entradaDTO) throws Exception {
         EntradaDTO savedEntrada = entradaService.save(entradaDTO);
         return new ResponseEntity<>(savedEntrada, HttpStatus.CREATED);
     }

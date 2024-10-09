@@ -1,14 +1,16 @@
 package pe.com.marbella.marketservice.controller;
 
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pe.com.marbella.marketservice.dto.ProductoDTO;
+import pe.com.marbella.marketservice.dto.validation.OnCreate;
+import pe.com.marbella.marketservice.dto.validation.OnUpdate;
 import pe.com.marbella.marketservice.service.ProductoService;
 
 import java.util.List;
@@ -36,14 +38,14 @@ public class ProductoController {
 
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PostMapping
-    public ResponseEntity<ProductoDTO> createProducto(@Valid @RequestBody ProductoDTO productoDTO) throws Exception {
+    public ResponseEntity<ProductoDTO> createProducto(@Validated(OnCreate.class) @RequestBody ProductoDTO productoDTO) throws Exception {
         ProductoDTO savedProducto = productoService.save(productoDTO);
         return new ResponseEntity<>(savedProducto, HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PutMapping("/{id}")
-    public ResponseEntity<ProductoDTO> updateProducto(@PathVariable Long id, @Valid @RequestBody ProductoDTO productoDTO) throws Exception {
+    public ResponseEntity<ProductoDTO> updateProducto(@PathVariable Long id, @Validated(OnUpdate.class) @RequestBody ProductoDTO productoDTO) throws Exception {
         if (!id.equals(productoDTO.idPro())) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

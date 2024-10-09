@@ -1,12 +1,13 @@
 package pe.com.marbella.marketservice.controller;
 
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pe.com.marbella.marketservice.dto.SalidaDTO;
+import pe.com.marbella.marketservice.dto.validation.OnCreate;
 import pe.com.marbella.marketservice.service.SalidaService;
 
 import java.util.List;
@@ -31,7 +32,7 @@ public class SalidaController {
     }
 
     @PostMapping
-    public ResponseEntity<SalidaDTO> createSalida(@Valid @RequestBody SalidaDTO salidaDTO) throws Exception {
+    public ResponseEntity<SalidaDTO> createSalida(@Validated(OnCreate.class) @RequestBody SalidaDTO salidaDTO) throws Exception {
         SalidaDTO savedSalida = salidaService.save(salidaDTO);
         return new ResponseEntity<>(savedSalida, HttpStatus.CREATED);
     }

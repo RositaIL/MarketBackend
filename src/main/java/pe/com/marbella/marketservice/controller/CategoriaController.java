@@ -1,12 +1,14 @@
 package pe.com.marbella.marketservice.controller;
 
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pe.com.marbella.marketservice.dto.CategoriaDTO;
+import pe.com.marbella.marketservice.dto.validation.OnCreate;
+import pe.com.marbella.marketservice.dto.validation.OnUpdate;
 import pe.com.marbella.marketservice.service.CategoriaService;
 
 import java.util.List;
@@ -31,14 +33,14 @@ public class CategoriaController {
     }
 
     @PostMapping
-    public ResponseEntity<CategoriaDTO> createCategoria(@Valid @RequestBody CategoriaDTO categoriaDTO) throws Exception {
+    public ResponseEntity<CategoriaDTO> createCategoria(@Validated(OnCreate.class) @RequestBody CategoriaDTO categoriaDTO) throws Exception {
         CategoriaDTO savedCategoria = categoriaService.save(categoriaDTO);
         return new ResponseEntity<>(savedCategoria, HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PutMapping("/{id}")
-    public ResponseEntity<CategoriaDTO> updateCategoria(@PathVariable Long id, @Valid @RequestBody CategoriaDTO categoriaDTO) throws Exception {
+    public ResponseEntity<CategoriaDTO> updateCategoria(@PathVariable Long id, @Validated(OnUpdate.class) @RequestBody CategoriaDTO categoriaDTO) throws Exception {
         if (!id.equals(categoriaDTO.idCategoria())) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
