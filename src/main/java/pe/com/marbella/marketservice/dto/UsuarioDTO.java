@@ -8,7 +8,7 @@ import pe.com.marbella.marketservice.dto.validation.OnCreate;
 import pe.com.marbella.marketservice.dto.validation.OnUpdate;
 
 public record UsuarioDTO(
-        @NotNull(groups = OnUpdate.class)Long idUsuario,
+        @NotNull(groups = OnUpdate.class) Long idUsuario,
 
         @NotEmpty(groups = OnCreate.class,message = "- Debe especificar el nombre completo del usuario")
         @Size(groups = {OnCreate.class, OnUpdate.class},max = 50, message = "- El nombre completo no debe exceder los 50 caracteres")
