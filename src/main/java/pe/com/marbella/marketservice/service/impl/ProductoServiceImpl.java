@@ -80,6 +80,13 @@ public class ProductoServiceImpl implements ProductoService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<ProductoDTO> findAllByCategoria(Long categoria, Pageable pageable) throws Exception{
+        List<Producto> productos = productoRepository.findAllByCategoria_IdCategoriaAndEstado(categoria,true,pageable);
+        return productos.stream().map(this::mapToDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public ProductoDTO findById(Long id) throws Exception{
         Producto producto = productoRepository.findByIdProAndEstado(id, true)
                 .orElseThrow(() -> new EntityNotFoundException("Producto no encontrado"));

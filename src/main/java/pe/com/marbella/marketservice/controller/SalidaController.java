@@ -1,6 +1,8 @@
 package pe.com.marbella.marketservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,8 +22,10 @@ public class SalidaController {
     private SalidaService salidaService;
 
     @GetMapping
-    public ResponseEntity<List<SalidaDTO>> getAllSalidas() throws Exception {
-        List<SalidaDTO> salidas = salidaService.findAll();
+    public ResponseEntity<List<SalidaDTO>> getAllSalidas(@RequestParam(defaultValue = "0") int page,
+    @RequestParam(defaultValue = "10") int size) throws Exception {
+        Pageable pageable = PageRequest.of(page, size);
+        List<SalidaDTO> salidas = salidaService.findAll(pageable);
         return new ResponseEntity<>(salidas, HttpStatus.OK);
     }
 

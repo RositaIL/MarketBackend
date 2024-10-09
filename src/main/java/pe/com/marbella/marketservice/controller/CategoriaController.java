@@ -1,6 +1,8 @@
 package pe.com.marbella.marketservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,8 +23,10 @@ public class CategoriaController {
     private CategoriaService categoriaService;
 
     @GetMapping
-    public ResponseEntity<List<CategoriaDTO>> getAllCategorias() throws Exception {
-        List<CategoriaDTO> categorias = categoriaService.listadoCategoria();
+    public ResponseEntity<List<CategoriaDTO>> getAllCategorias(@RequestParam(defaultValue = "0") int page,
+    @RequestParam(defaultValue = "10") int size) throws Exception {
+        Pageable pageable = PageRequest.of(page, size);
+        List<CategoriaDTO> categorias = categoriaService.listadoCategoria(pageable);
         return new ResponseEntity<>(categorias, HttpStatus.OK);
     }
 

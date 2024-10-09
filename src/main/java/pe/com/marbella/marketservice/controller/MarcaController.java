@@ -1,6 +1,8 @@
 package pe.com.marbella.marketservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,8 +23,10 @@ public class MarcaController {
     private MarcaService marcaService;
 
     @GetMapping
-    public ResponseEntity<List<MarcaDTO>> getAllMarcas() throws Exception {
-        List<MarcaDTO> marcas = marcaService.findAll();
+    public ResponseEntity<List<MarcaDTO>> getAllMarcas(@RequestParam(defaultValue = "0") int page,
+    @RequestParam(defaultValue = "10") int size) throws Exception {
+        Pageable pageable = PageRequest.of(page, size);
+        List<MarcaDTO> marcas = marcaService.findAll(pageable);
         return new ResponseEntity<>(marcas, HttpStatus.OK);
     }
 

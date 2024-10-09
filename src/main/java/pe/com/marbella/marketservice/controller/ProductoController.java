@@ -30,6 +30,14 @@ public class ProductoController {
         return new ResponseEntity<>(productos, HttpStatus.OK);
     }
 
+    @GetMapping("/categoria/{categoria}")
+    public ResponseEntity<List<ProductoDTO>> getAllProductosByCategoria(@PathVariable Long categoria,
+    @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) throws Exception {
+        Pageable pageable = PageRequest.of(page, size);
+        List<ProductoDTO> productos = productoService.findAllByCategoria(categoria, pageable);
+        return new ResponseEntity<>(productos, HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ProductoDTO> getProductoById(@PathVariable Long id) throws Exception {
         ProductoDTO productoDTO = productoService.findById(id);
