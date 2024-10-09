@@ -31,6 +31,9 @@ public class DetalleSalida {
     @Column(name = "cantidad", nullable = false)
     private int cantidad;
 
+    @Column(name = "precio",nullable = false)
+    private double precio;
+
     @Column(nullable = false)
     private boolean estado;
 

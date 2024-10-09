@@ -5,7 +5,6 @@ import lombok.*;
 import pe.com.marbella.marketservice.dto.SalidaDTO;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,8 +43,7 @@ public class Salida {
     }
 
     public Salida(SalidaDTO dto) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        this.fechaSalida = LocalDate.parse(dto.fechaSalida(), formatter);
+        this.fechaSalida = LocalDate.parse(dto.fechaSalida());
         this.estado=true;
     }
 }
