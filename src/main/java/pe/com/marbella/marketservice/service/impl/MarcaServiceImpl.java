@@ -34,8 +34,8 @@ public class MarcaServiceImpl implements MarcaService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<MarcaDTO> findAll(Pageable pageable) throws Exception {
-        return marcaRepository.findByEstado(true, pageable)
+    public Page<MarcaDTO> findAll(String nombre, Pageable pageable) throws Exception {
+        return marcaRepository.findByNombreContainingAndEstado(nombre, true, pageable)
                 .map(this::mapToDTO);
     }
 

@@ -21,8 +21,8 @@ public class MarcaController {
     private MarcaService marcaService;
 
     @GetMapping
-    public ResponseEntity<Page<MarcaDTO>> getAllMarcas(Pageable pageable) throws Exception {
-        Page<MarcaDTO> marcas = marcaService.findAll(pageable);
+    public ResponseEntity<Page<MarcaDTO>> getAllMarcas(@RequestParam(defaultValue = "") String nombre, Pageable pageable) throws Exception {
+        Page<MarcaDTO> marcas = marcaService.findAll(nombre, pageable);
         return new ResponseEntity<>(marcas, HttpStatus.OK);
     }
 

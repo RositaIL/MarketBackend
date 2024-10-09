@@ -23,8 +23,8 @@ public class UsuarioController {
     private UsuarioService usuarioService;
 
     @GetMapping
-    public ResponseEntity<Page<UsuarioResponseDTO>> obtenerUsuarios(Pageable pageable) throws Exception {
-        Page<UsuarioResponseDTO> usuarios = usuarioService.findAll(pageable);
+    public ResponseEntity<Page<UsuarioResponseDTO>> obtenerUsuarios(@RequestParam(defaultValue = "") String nombre , Pageable pageable) throws Exception {
+        Page<UsuarioResponseDTO> usuarios = usuarioService.findAll(nombre, pageable);
         return new ResponseEntity<>(usuarios, HttpStatus.OK);
     }
 

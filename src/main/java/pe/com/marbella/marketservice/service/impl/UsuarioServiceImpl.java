@@ -53,9 +53,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<UsuarioResponseDTO> findAll(Pageable pageable) throws Exception {
-        return usuarioRepository.findByEstado(true, pageable)
-                .map(this::mapToDTO);
+    public Page<UsuarioResponseDTO> findAll(String nombre, Pageable pageable) throws Exception {
+        return usuarioRepository.findByNombreContainingAndEstado(nombre, true, pageable)
+                            .map(this::mapToDTO);
     }
 
     @Override
