@@ -1,6 +1,7 @@
 package pe.com.marbella.marketservice.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -10,9 +11,7 @@ import pe.com.marbella.marketservice.model.Proveedor;
 import pe.com.marbella.marketservice.repository.ProveedorRepository;
 import pe.com.marbella.marketservice.service.ProveedorService;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class ProveedorServiceImpl implements ProveedorService {
@@ -37,10 +36,9 @@ public class ProveedorServiceImpl implements ProveedorService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ProveedorDTO> findAll(Pageable pageable) throws Exception {
-        return proveedorRepository.findByEstado(true,pageable).stream()
-                .map(this::mapToDTO)
-                .collect(Collectors.toList());
+    public Page<ProveedorDTO> findAll(Pageable pageable) throws Exception {
+        return proveedorRepository.findByEstado(true,pageable)
+                .map(this::mapToDTO);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package pe.com.marbella.marketservice.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,11 +53,9 @@ public class EntradaServiceImpl implements EntradaService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<EntradaDTO> findAll(Pageable pageable) throws Exception {
-        List<Entrada> entradas = entradaRepository.findByEstado(true,pageable);
-        return entradas.stream()
-                .map(this::mapToDTO)
-                .collect(Collectors.toList());
+    public Page<EntradaDTO> findAll(Pageable pageable) throws Exception {
+        return entradaRepository.findByEstado(true,pageable)
+                .map(this::mapToDTO);
     }
 
     @Override

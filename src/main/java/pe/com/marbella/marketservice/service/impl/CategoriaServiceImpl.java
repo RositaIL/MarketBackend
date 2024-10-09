@@ -2,6 +2,7 @@ package pe.com.marbella.marketservice.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,9 +12,7 @@ import pe.com.marbella.marketservice.model.Categoria;
 import pe.com.marbella.marketservice.repository.CategoriaRepository;
 import pe.com.marbella.marketservice.service.CategoriaService;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Validated
@@ -34,10 +33,9 @@ public class CategoriaServiceImpl implements CategoriaService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CategoriaDTO> listadoCategoria(Pageable pageable) throws Exception{
-        return categoriaRepository.findByEstado(true, pageable).stream()
-                .map(this::mapToDTO)
-                .collect(Collectors.toList());
+    public Page<CategoriaDTO> listadoCategoria(Pageable pageable) throws Exception{
+        return categoriaRepository.findByEstado(true, pageable)
+                .map(this::mapToDTO);
     }
 
     @Override
