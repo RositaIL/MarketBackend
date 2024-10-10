@@ -9,6 +9,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -92,7 +93,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(DataIntegrityViolationException ex, WebRequest request) {
-        String mensajeError = obtenerMensajeError(ex.getMessage());
+        String mensajeError = "Error de integridad de datos";
         return buildErrorResponse(mensajeError, request, HttpStatus.CONFLICT, ex);
     }
 
@@ -100,6 +101,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleAccessDeniedException(RuntimeException ex, WebRequest request) {
         String mensajeError = "Acceso denegado: No tienes permisos para acceder a este recurso.";
         return buildErrorResponse(mensajeError, request, HttpStatus.FORBIDDEN, ex);
+    }
+
+    @ExceptionHandler(MissingRequestHeaderException.class)
+    public ResponseEntity<ErrorResponse> handleMissingRequestHeaderException(MissingRequestHeaderException ex, WebRequest request) {
+        String mensajeError = "La cabecera requerida '" + ex.getHeaderName() + "' no está presente.";
+        return buildErrorResponse(mensajeError, request, HttpStatus.BAD_REQUEST, ex);
     }
 
     private ResponseEntity<ErrorResponse> buildErrorResponse(String mensajeError, WebRequest request, HttpStatus status, Exception ex) {

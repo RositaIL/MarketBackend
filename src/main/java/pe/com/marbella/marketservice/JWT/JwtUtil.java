@@ -35,7 +35,7 @@ public class JwtUtil {
                 .claim("rol", rol)
                 .subject(usuario.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 2))
                 .signWith(getKey())
                 .compact();
     }
@@ -71,7 +71,7 @@ public class JwtUtil {
         return claimsResolver.apply(claims);
     }
 
-    private Date getExpiration(String token)
+    public Date getExpiration(String token)
     {
         return getClaim(token, Claims::getExpiration);
     }

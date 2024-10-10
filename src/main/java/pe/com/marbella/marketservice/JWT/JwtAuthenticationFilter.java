@@ -23,6 +23,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import pe.com.marbella.marketservice.exception.ErrorResponse;
+import pe.com.marbella.marketservice.service.TokenBlacklistService;
 import pe.com.marbella.marketservice.service.impl.AuthService;
 
 @Component
@@ -31,6 +32,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     AuthService authService;
     @Autowired
     JwtUtil jwtService;
+    @Autowired
+    private TokenBlacklistService tokenBlacklistService;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,@NonNull HttpServletResponse response,@NonNull FilterChain filterChain)
@@ -42,7 +45,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-
+        // Verificar si el token está en la lista negra
+        if (tokenBlacklistService.isTokenBlacklisted(token)) {
+            String errorMessage = "Token invalidado, acceso no permitido.";
+            JWTErrorManage(request, response, errorMessage, "Blacklisted token");
+            return;
+        }
         try {
             username = jwtService.getUsernameFromToken(token);
         } catch (ExpiredJwtException ex) {
