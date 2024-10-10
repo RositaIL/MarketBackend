@@ -17,6 +17,6 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
     Page<Producto> findByNombreContainingAndEstado(@Param("nombre") String nombre, @Param("estado") boolean estado, Pageable pageable);
     Optional<Producto> findByIdProAndEstado(Long idPro, boolean estado);
     @Query("SELECT p FROM Producto p WHERE p.stockActual < p.stockMin AND p.estado = :estado")
-    List<Producto> findByStockActualAndEstado(boolean estado);
+    List<Producto> findByStockActualAndEstado(@Param("estado") boolean estado);
     Page<Producto> findAllByCategoria_IdCategoriaAndEstado(Long idCategoria, boolean estado, Pageable pageable);
 }

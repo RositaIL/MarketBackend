@@ -3,6 +3,9 @@ package pe.com.marbella.marketservice.service.impl;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -16,6 +19,7 @@ import pe.com.marbella.marketservice.repository.MarcaRepository;
 import pe.com.marbella.marketservice.repository.MedidaRepository;
 import pe.com.marbella.marketservice.repository.ProductoRepository;
 import pe.com.marbella.marketservice.service.ProductoService;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductoServiceImpl implements ProductoService {
@@ -135,5 +139,13 @@ public class ProductoServiceImpl implements ProductoService {
 
         producto.eliminar();
         productoRepository.save(producto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProductoDTO> findLowStockProducts() throws Exception {
+        return productoRepository.findByStockActualAndEstado(true).stream()
+            .map(this::mapToDTO)
+            .collect(Collectors.toList());
     }
 }

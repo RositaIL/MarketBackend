@@ -12,6 +12,7 @@ import pe.com.marbella.marketservice.dto.ProductoDTO;
 import pe.com.marbella.marketservice.dto.validation.OnCreate;
 import pe.com.marbella.marketservice.dto.validation.OnUpdate;
 import pe.com.marbella.marketservice.service.ProductoService;
+import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -62,4 +63,10 @@ public class ProductoController {
         productoService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @GetMapping("/reporte")
+    public ResponseEntity<List<ProductoDTO>> getLowStockProducts() throws Exception {
+        List<ProductoDTO> productos = productoService.findLowStockProducts();
+        return new ResponseEntity<>(productos, HttpStatus.OK);
+}
 }
