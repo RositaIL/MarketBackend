@@ -6,7 +6,7 @@ import pe.com.marbella.marketservice.dto.CategoriaDTO;
 
 public interface CategoriaService {
 
-    Page<CategoriaDTO> listadoCategoria(Pageable pageable) throws Exception;
+    Page<CategoriaDTO> listadoCategoria(String nombtr, Pageable pageable) throws Exception;
     CategoriaDTO buscarCategoria(long id) throws Exception;
     CategoriaDTO save(CategoriaDTO entity) throws Exception;
     CategoriaDTO update(CategoriaDTO entity) throws Exception;

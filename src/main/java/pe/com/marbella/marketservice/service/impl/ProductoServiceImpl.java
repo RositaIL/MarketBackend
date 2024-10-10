@@ -71,8 +71,8 @@ public class ProductoServiceImpl implements ProductoService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<ProductoDTO> findAll(Pageable pageable) throws Exception{
-        return productoRepository.findByEstado(true,pageable)
+    public Page<ProductoDTO> findAll(String nombre, Pageable pageable) throws Exception{
+        return productoRepository.findByNombreContainingAndEstado(nombre, true,pageable)
                 .map(this::mapToDTO);
     }
 

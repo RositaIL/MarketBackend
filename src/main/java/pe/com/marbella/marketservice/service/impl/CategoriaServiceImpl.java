@@ -33,8 +33,8 @@ public class CategoriaServiceImpl implements CategoriaService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<CategoriaDTO> listadoCategoria(Pageable pageable) throws Exception{
-        return categoriaRepository.findByEstado(true, pageable)
+    public Page<CategoriaDTO> listadoCategoria(String nombre, Pageable pageable) throws Exception{
+        return categoriaRepository.findByNombreContainingAndEstado(nombre, true, pageable)
                 .map(this::mapToDTO);
     }
 

@@ -30,8 +30,8 @@ public class MedidaServiceImpl implements MedidaService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<MedidaDTO> findAll(Pageable pageable) throws Exception {
-        return medidaRepository.findByEstado(true, pageable)
+    public Page<MedidaDTO> findAll(String nombre, Pageable pageable) throws Exception {
+        return medidaRepository.findByNombreContainingAndEstado(nombre,true, pageable)
                 .map(this::mapToDTO);
     }
 

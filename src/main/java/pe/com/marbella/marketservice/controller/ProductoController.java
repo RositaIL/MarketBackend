@@ -21,8 +21,8 @@ public class ProductoController {
     private ProductoService productoService;
 
     @GetMapping
-    public ResponseEntity<Page<ProductoDTO>> getAllProductos(Pageable pageable) throws Exception {
-        Page<ProductoDTO> productos = productoService.findAll(pageable);
+    public ResponseEntity<Page<ProductoDTO>> getAllProductos(@RequestParam(defaultValue = "") String nombre, Pageable pageable) throws Exception {
+        Page<ProductoDTO> productos = productoService.findAll(nombre, pageable);
         return new ResponseEntity<>(productos, HttpStatus.OK);
     }
 

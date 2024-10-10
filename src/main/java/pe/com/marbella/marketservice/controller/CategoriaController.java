@@ -21,8 +21,8 @@ public class CategoriaController {
     private CategoriaService categoriaService;
 
     @GetMapping
-    public ResponseEntity<Page<CategoriaDTO>> getAllCategorias(Pageable pageable) throws Exception {
-        Page<CategoriaDTO> categorias = categoriaService.listadoCategoria(pageable);
+    public ResponseEntity<Page<CategoriaDTO>> getAllCategorias(@RequestParam(defaultValue = "") String nombre, Pageable pageable) throws Exception {
+        Page<CategoriaDTO> categorias = categoriaService.listadoCategoria(nombre, pageable);
         return new ResponseEntity<>(categorias, HttpStatus.OK);
     }
 

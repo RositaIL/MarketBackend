@@ -21,8 +21,8 @@ public class MedidaController {
     private MedidaService medidaService;
 
     @GetMapping
-    public ResponseEntity<Page<MedidaDTO>> getAllMedidas(Pageable pageable) throws Exception {
-        Page<MedidaDTO> medidas = medidaService.findAll(pageable);
+    public ResponseEntity<Page<MedidaDTO>> getAllMedidas(@RequestParam(defaultValue = "") String nombre, Pageable pageable) throws Exception {
+        Page<MedidaDTO> medidas = medidaService.findAll(nombre, pageable);
         return new ResponseEntity<>(medidas, HttpStatus.OK);
     }
 

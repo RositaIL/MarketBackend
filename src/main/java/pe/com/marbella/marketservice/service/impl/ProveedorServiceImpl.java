@@ -36,8 +36,8 @@ public class ProveedorServiceImpl implements ProveedorService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<ProveedorDTO> findAll(Pageable pageable) throws Exception {
-        return proveedorRepository.findByEstado(true,pageable)
+    public Page<ProveedorDTO> findAll(String nombre, Pageable pageable) throws Exception {
+        return proveedorRepository.findByNombreContainingAndEstado(nombre, true,pageable)
                 .map(this::mapToDTO);
     }
 

@@ -22,8 +22,8 @@ public class ProveedorController {
 
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @GetMapping
-    public ResponseEntity<Page<ProveedorDTO>> getAllProveedores(Pageable pageable) throws Exception {
-        Page<ProveedorDTO> proveedores = proveedorService.findAll(pageable);
+    public ResponseEntity<Page<ProveedorDTO>> getAllProveedores(@RequestParam(defaultValue = "") String nombre, Pageable pageable) throws Exception {
+        Page<ProveedorDTO> proveedores = proveedorService.findAll(nombre, pageable);
         return new ResponseEntity<>(proveedores, HttpStatus.OK);
     }
 
