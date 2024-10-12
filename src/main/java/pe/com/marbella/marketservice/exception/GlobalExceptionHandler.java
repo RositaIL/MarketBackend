@@ -93,7 +93,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(DataIntegrityViolationException ex, WebRequest request) {
-        String mensajeError = "Error de integridad de datos";
+        String mensajeError = obtenerMensajeError(ex.getMessage());
         return buildErrorResponse(mensajeError, request, HttpStatus.CONFLICT, ex);
     }
 
@@ -120,8 +120,9 @@ public class GlobalExceptionHandler {
         if (mensajeOriginal.contains("Duplicate entry")) {
             String valorDuplicado = mensajeOriginal.split("'")[1];
             return "El valor ingresado '" + valorDuplicado + "' ya existe.";
+        } else {
+            return "Error de integridad de datos";
         }
-        return mensajeOriginal;
     }
 
     private String extractErrorMessage(Exception ex) {
