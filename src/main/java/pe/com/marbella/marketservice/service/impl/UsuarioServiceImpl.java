@@ -17,6 +17,10 @@ import pe.com.marbella.marketservice.service.UsuarioService;
 
 import java.util.Optional;
 
+/**
+ * Implementación de la interfaz UsuarioService.
+ * Proporciona métodos para interactuar con la entidad Usuario, incluyendo la gestión de contraseñas y roles.
+ */
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
     @Autowired
@@ -26,6 +30,12 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Autowired
     private PasswordEncoder codificador;
 
+    /**
+     * Mapea un objeto Usuario a un objeto UsuarioResponseDTO.
+     *
+     * @param usuario El objeto Usuario a mapear.
+     * @return El objeto UsuarioResponseDTO mapeado.
+     */
     private UsuarioResponseDTO mapToDTO(Usuario usuario) {
         return new UsuarioResponseDTO(
                 usuario.getIdUsuario(),
@@ -36,6 +46,13 @@ public class UsuarioServiceImpl implements UsuarioService {
         );
     }
 
+    /**
+     * Mapea un objeto UsuarioDTO y un objeto Rol a un objeto Usuario.
+     *
+     * @param usuarioDTO El objeto UsuarioDTO a mapear.
+     * @param rol        El objeto Rol a mapear.
+     * @return El objeto Usuario mapeado.
+     */
     private Usuario mapToEntity(UsuarioDTO usuarioDTO, Rol rol) {
         return new Usuario(
                 usuarioDTO.idUsuario(),
@@ -47,10 +64,25 @@ public class UsuarioServiceImpl implements UsuarioService {
                 true);
     }
 
+    /**
+     * Obtiene un objeto Rol por su ID.
+     *
+     * @param id El ID del rol.
+     * @return El objeto Rol encontrado.
+     * @throws EntityNotFoundException Si no se encuentra el rol.
+     */
     private Rol getRole(Long id){
         return rolRepository.findByIdRolAndEstado(id,true).orElseThrow(() -> new EntityNotFoundException("Rol no encontrado"));
     }
 
+    /**
+     * Obtiene una página de usuarios que coinciden con el nombre proporcionado.
+     *
+     * @param nombre   El nombre a buscar.
+     * @param pageable Objeto Pageable para la paginación.
+     * @return Una página de objetos UsuarioResponseDTO.
+     * @throws Exception Si ocurre un error al obtener los usuarios.
+     */
     @Override
     @Transactional(readOnly = true)
     public Page<UsuarioResponseDTO> findAll(String nombre, Pageable pageable) throws Exception {
@@ -58,6 +90,13 @@ public class UsuarioServiceImpl implements UsuarioService {
                             .map(this::mapToDTO);
     }
 
+    /**
+     * Obtiene un usuario por su ID.
+     *
+     * @param id El ID del usuario.
+     * @return El objeto UsuarioResponseDTO encontrado.
+     * @throws Exception Si ocurre un error al obtener el usuario.
+     */
     @Override
     @Transactional(readOnly = true)
     public UsuarioResponseDTO findById(Long id) throws Exception {
@@ -66,6 +105,15 @@ public class UsuarioServiceImpl implements UsuarioService {
         return mapToDTO(usuario);
     }
 
+    /**
+     * Guarda un nuevo usuario o actualiza uno existente.
+     * Si se encuentra un usuario inactivo con el mismo correo electrónico, se actualiza y se activa.
+     * De lo contrario, se crea un nuevo usuario.
+     *
+     * @param usuarioDTO El DTO del usuario a guardar o actualizar.
+     * @return El DTO del usuario guardado o actualizado.
+     * @throws Exception Si ocurre un error al guardar o actualizar el usuario.
+     */
     @Override
     @Transactional
     public UsuarioResponseDTO save(UsuarioDTO usuarioDTO) throws Exception {
@@ -90,6 +138,13 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
     }
 
+    /**
+     * Actualiza un usuario existente.
+     *
+     * @param usuarioDTO El DTO del usuario con la información actualizada.
+     * @return El DTO del usuario actualizado.
+     * @throws Exception Si ocurre un error al actualizar el usuario.
+     */
     @Override
     @Transactional
     public UsuarioResponseDTO update(UsuarioDTO usuarioDTO) throws Exception {
@@ -114,6 +169,12 @@ public class UsuarioServiceImpl implements UsuarioService {
         return mapToDTO(usuarioRepository.save(usuario));
     }
 
+    /**
+     * Elimina un usuario.
+     *
+     * @param id El ID del usuario a eliminar.
+     * @throws Exception Si ocurre un error al eliminar el usuario.
+     */
     @Override
     @Transactional
     public void delete(Long id) throws Exception {

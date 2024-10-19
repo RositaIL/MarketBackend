@@ -21,6 +21,10 @@ import pe.com.marbella.marketservice.service.EntradaService;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Implementación de la interfaz EntradaService.
+ * Proporciona métodos para gestionar las entradas, incluyendo la gestión de detalles de entrada.
+ */
 @Service
 public class EntradaServiceImpl implements EntradaService {
 
@@ -33,6 +37,12 @@ public class EntradaServiceImpl implements EntradaService {
     @Autowired
     DetalleEntradaService detalleEntradaService;
 
+    /**
+     * Mapea un objeto Entrada a un objeto EntradaDTO.
+     *
+     * @param entrada El objeto Entrada a mapear.
+     * @return El objeto EntradaDTO mapeado.
+     */
     private EntradaDTO mapToDTO(Entrada entrada) {
         List<DetalleEntradaDTO> detalleEntradaDTOList = entrada.getDetalleEntrada().stream()
                 .map(detalle -> new DetalleEntradaDTO(
@@ -51,6 +61,13 @@ public class EntradaServiceImpl implements EntradaService {
         );
     }
 
+    /**
+     * Obtiene una página de entradas.
+     *
+     * @param pageable Objeto Pageable para la paginación.
+     * @return Una página de objetos EntradaDTO.
+     * @throws Exception Sí ocurre un error al obtener las entradas.
+     */
     @Override
     @Transactional(readOnly = true)
     public Page<EntradaDTO> findAll(Pageable pageable) throws Exception {
@@ -58,6 +75,13 @@ public class EntradaServiceImpl implements EntradaService {
                 .map(this::mapToDTO);
     }
 
+    /**
+     * Obtiene una entrada por su ID.
+     *
+     * @param id El ID de la entrada.
+     * @return El objeto EntradaDTO encontrado.
+     * @throws Exception Sí ocurre un error al obtener la entrada.
+     */
     @Override
     @Transactional(readOnly = true)
     public EntradaDTO findById(Long id) throws Exception {
@@ -67,6 +91,13 @@ public class EntradaServiceImpl implements EntradaService {
         return mapToDTO(entrada);
     }
 
+    /**
+     * Guarda una nueva entrada y sus detalles.
+     *
+     * @param entradaDTO El DTO de la entrada a guardar.
+     * @return El DTO de la entrada guardada.
+     * @throws Exception Si ocurre un error al guardar la entrada.
+     */
     @Override
     @Transactional
     public EntradaDTO save(EntradaDTO entradaDTO) throws Exception {
@@ -95,6 +126,12 @@ public class EntradaServiceImpl implements EntradaService {
         return mapToDTO(respuesta);
     }
 
+    /**
+     * Elimina una entrada.
+     *
+     * @param idEntrada El ID de la entrada a eliminar.
+     * @throws Exception Sí ocurre un error al eliminar la entrada.
+     */
     @Override
     @Transactional
     public void delete(Long idEntrada) throws Exception {

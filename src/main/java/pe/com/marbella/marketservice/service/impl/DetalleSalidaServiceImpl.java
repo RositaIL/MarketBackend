@@ -13,6 +13,10 @@ import pe.com.marbella.marketservice.service.DetalleSalidaService;
 
 import java.util.List;
 
+/**
+ * Implementación de la interfaz DetalleSalidaService.
+ * Proporciona métodos para gestionar los detalles de cada salida.
+ */
 @Service
 public class DetalleSalidaServiceImpl implements DetalleSalidaService {
     @Autowired
@@ -20,6 +24,13 @@ public class DetalleSalidaServiceImpl implements DetalleSalidaService {
     @Autowired
     ProductoRepository productoRepository;
 
+    /**
+     * Guarda un nuevo detalle de salida y actualiza el stock del producto asociado.
+     *
+     * @param detalleSalida El detalle de salida a guardar.
+     * @return El detalle de salida guardado.
+     * @throws Exception Si ocurre un error al guardar el detalle de salida.
+     */
     @Override
     @Transactional
     public DetalleSalida save(DetalleSalida detalleSalida) throws Exception{
@@ -41,6 +52,12 @@ public class DetalleSalidaServiceImpl implements DetalleSalidaService {
         return detalleSalidaRepository.save(detalleSalida);
     }
 
+    /**
+     * Elimina los detalles de salida asociados a una salida y actualiza el stock de los productos asociados.
+     *
+     * @param idSalida El ID de la salida a la que pertenecen los detalles de salida.
+     * @throws Exception Si ocurre un error al eliminar los detalles de salida.
+     */
     @Override
     @Transactional
     public void delete(Long idSalida) throws Exception{

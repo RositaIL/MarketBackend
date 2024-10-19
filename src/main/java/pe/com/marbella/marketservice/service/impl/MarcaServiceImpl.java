@@ -14,6 +14,10 @@ import pe.com.marbella.marketservice.service.MarcaService;
 
 import java.util.Optional;
 
+/**
+ * Implementación de la interfaz MarcaService.
+ * Proporciona métodos para gestionar las marcas.
+ */
 @Service
 @Validated
 public class MarcaServiceImpl implements MarcaService {
@@ -21,6 +25,12 @@ public class MarcaServiceImpl implements MarcaService {
     @Autowired
     private MarcaRepository marcaRepository;
 
+    /**
+     * Mapea un objeto Marca a un objeto MarcaDTO.
+     *
+     * @param marca El objeto Marca a mapear.
+     * @return El objeto MarcaDTO mapeado.
+     */
     private MarcaDTO mapToDTO(Marca marca) {
         return new MarcaDTO(
                 marca.getIdMarca(),
@@ -28,10 +38,24 @@ public class MarcaServiceImpl implements MarcaService {
         );
     }
 
+    /**
+     * Mapea un objeto MarcaDTO a un objeto Marca.
+     *
+     * @param marcaDTO El objeto MarcaDTO a mapear.
+     * @return El objeto Marca mapeado.
+     */
     private Marca mapToEntity(MarcaDTO marcaDTO) {
         return new Marca(marcaDTO);
     }
 
+    /**
+     * Obtiene una página de marcas que coinciden con el nombre proporcionado.
+     *
+     * @param nombre   El nombre a buscar.
+     * @param pageable Objeto Pageable para la paginación.
+     * @return Una página de objetos MarcaDTO.
+     * @throws Exception Si ocurre un error al obtener las marcas.
+     */
     @Override
     @Transactional(readOnly = true)
     public Page<MarcaDTO> findAll(String nombre, Pageable pageable) throws Exception {
@@ -39,6 +63,13 @@ public class MarcaServiceImpl implements MarcaService {
                 .map(this::mapToDTO);
     }
 
+    /**
+     * Obtiene una marca por su ID.
+     *
+     * @param id El ID de la marca.
+     * @return El objeto MarcaDTO encontrado.
+     * @throws Exception Si ocurre un error al obtener la marca.
+     */
     @Override
     @Transactional(readOnly = true)
     public MarcaDTO findById(Long id) throws Exception {
@@ -47,6 +78,13 @@ public class MarcaServiceImpl implements MarcaService {
         return mapToDTO(marca);
     }
 
+    /**
+     * Guarda una nueva marca o actualiza una existente si se encuentra inactiva con el mismo nombre.
+     *
+     * @param marcaDTO El DTO de la marca a guardar o actualizar.
+     * @return El DTO de la marca guardada o actualizada.
+     * @throws Exception Si ocurre un error al guardar o actualizar la marca.
+     */
     @Override
     @Transactional
     public MarcaDTO save(MarcaDTO marcaDTO) throws Exception {
@@ -63,6 +101,13 @@ public class MarcaServiceImpl implements MarcaService {
         return mapToDTO(savedMarca);
     }
 
+    /**
+     * Actualiza una marca existente.
+     *
+     * @param marcaDTO El DTO de la marca con la información actualizada.
+     * @return El DTO de la marca actualizada.
+     * @throws Exception Si ocurre un error al actualizar la marca.
+     */
     @Override
     @Transactional
     public MarcaDTO update(MarcaDTO marcaDTO) throws Exception {
@@ -74,6 +119,12 @@ public class MarcaServiceImpl implements MarcaService {
         return mapToDTO(marcaRepository.save(marca));
     }
 
+    /**
+     * Elimina una marca.
+     *
+     * @param id El ID de la marca a eliminar.
+     * @throws Exception Si ocurre un error al eliminar la marca.
+     */
     @Override
     @Transactional
     public void delete(Long id) throws Exception {

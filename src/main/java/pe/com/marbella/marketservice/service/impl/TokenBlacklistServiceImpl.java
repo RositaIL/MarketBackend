@@ -10,12 +10,21 @@ import pe.com.marbella.marketservice.service.TokenBlacklistService;
 import java.util.Date;
 import java.util.Optional;
 
+/**
+ * Implementación del servicio de lista negra de tokens.
+ */
 @Service
 public class TokenBlacklistServiceImpl implements TokenBlacklistService {
 
     @Autowired
     private BlacklistedTokenRepository blacklistedTokenRepository;
 
+    /**
+     * Agrega un token a la lista negra.
+     *
+     * @param token         El token a agregar a la lista negra.
+     * @param expirationDate La fecha de expiración del token.
+     */
     @Override
     @Transactional
     public void addToBlacklist(String token, Date expirationDate) {
@@ -23,6 +32,12 @@ public class TokenBlacklistServiceImpl implements TokenBlacklistService {
         blacklistedTokenRepository.save(blacklistedToken);
     }
 
+    /**
+     * Verifica si un token está en la lista negra.
+     *
+     * @param token El token a verificar.
+     * @return true si el token está en la lista negra, false en caso contrario.
+     */
     @Override
     @Transactional(readOnly = true)
     public boolean isTokenBlacklisted(String token) {
@@ -30,6 +45,9 @@ public class TokenBlacklistServiceImpl implements TokenBlacklistService {
         return blacklistedToken.isPresent();
     }
 
+    /**
+     * Elimina los tokens expirados de la lista negra.
+     */
     @Override
     @Transactional
     public void removeExpiredTokens() {

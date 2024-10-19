@@ -26,6 +26,13 @@ import pe.com.marbella.marketservice.exception.ErrorResponse;
 import pe.com.marbella.marketservice.service.TokenBlacklistService;
 import pe.com.marbella.marketservice.service.impl.AuthService;
 
+/**
+ * Filtro de autenticación JWT.
+ * Este filtro se ejecuta una vez por solicitud y se encarga de:
+ * 1. Extraer el token JWT de la cabecera Authorization.
+ * 2. Validar el token JWT.
+ * 3. Autenticar al usuario si el token es válido.
+ */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
@@ -35,6 +42,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private TokenBlacklistService tokenBlacklistService;
 
+    /**
+     * Método principal del filtro.
+     *
+     * @param request     La solicitud HTTP.
+     * @param response    La respuesta HTTP.
+     * @param filterChain La cadena de filtros.
+     * @throws ServletException Si ocurre una excepción Servlet.
+     * @throws IOException      Si ocurre una excepción de E/S.
+     */
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,@NonNull HttpServletResponse response,@NonNull FilterChain filterChain)
             throws ServletException, IOException {
@@ -81,7 +97,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    //Manejo de errores JWT que no llegan al GlobalExceptionHandler
+    /**
+     * Maneja los errores relacionados con JWT que no llegan al GlobalExceptionHandler.
+     *
+     * @param request         La solicitud HTTP.
+     * @param response        La respuesta HTTP.
+     * @param errorMessage    El mensaje de error principal.
+     * @param message         El mensaje de error detallado.
+     * @throws IOException    Si ocurre una excepción de E/S.
+     */
     private void JWTErrorManage(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, String errorMessage, String message) throws IOException {
         String requestDescription = request.getRequestURI();
         ErrorResponse errorDetails = new ErrorResponse(errorMessage, requestDescription);
@@ -96,6 +120,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         System.out.println(message);
     }
 
+    /**
+     * Obtiene el token JWT de la solicitud HTTP.
+     *
+     * @param request La solicitud HTTP.
+     * @return El token JWT o null si no se encuentra.
+     */
     private String getTokenFromRequest(HttpServletRequest request) {
         final String authHeader=request.getHeader(HttpHeaders.AUTHORIZATION);
         if(StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer "))

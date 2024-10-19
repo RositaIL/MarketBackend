@@ -15,6 +15,9 @@ import pe.com.marbella.marketservice.service.TokenBlacklistService;
 
 import java.util.Date;
 
+/**
+ * Controlador para manejar las solicitudes de autenticación.
+ */
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/auth")
@@ -32,6 +35,13 @@ public class AuthController {
     @Autowired
     private TokenBlacklistService tokenBlacklistService;
 
+    /**
+     * Crea un token JWT para un usuario válido.
+     *
+     * @param authRequest Solicitud de autenticación que contiene el nombre de usuario y la contraseña.
+     * @return Un token JWT si la autenticación es exitosa.
+     * @throws Exception Si ocurre un error durante la autenticación.
+     */
     @PostMapping("/login")
     public String createToken(@RequestBody AuthLogin authRequest) throws Exception {
         authenticationManager.authenticate(
@@ -42,6 +52,13 @@ public class AuthController {
         return jwtUtil.getToken(user);
     }
 
+    /**
+     * Cierra la sesión del usuario invalidando el token JWT.
+     *
+     * @param authHeader Encabezado de autorización que contiene el token JWT.
+     * @return Una respuesta que indica si el cierre de sesión fue exitoso.
+     * @throws Exception Si ocurre un error al invalidar el token.
+     */
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestHeader("Authorization") String authHeader) throws Exception {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {

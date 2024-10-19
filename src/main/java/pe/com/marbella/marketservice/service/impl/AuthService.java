@@ -14,15 +14,27 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+/**
+ * Servicio de autenticación personalizado que implementa la interfaz UserDetailsService de Spring Security.
+ */
 @Service
 public class AuthService implements UserDetailsService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    /**
+     * Carga los detalles de usuario por el nombre de usuario.
+     * Este método es llamado por Spring Security durante la autenticación.
+     *
+     * @param username El nombre de usuario para buscar.
+     * @return Un objeto UserDetails que representa al usuario autenticado.
+     * @throws UsernameNotFoundException Si el usuario no se encuentra o no está activo.
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Usuario usuario = usuarioRepository.findUsuarioByUsername(username)
             .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado con el nombre de usuario: " + username));
+        //Crea una autoridad (rol) para el usuario
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + usuario.getRol().getNombreRol());
 
         return new User(
@@ -32,7 +44,7 @@ public class AuthService implements UserDetailsService {
             true,               //accountNonExpired
             true,               //credentialsNonExpired
             true,               //accountNonLocked
-            List.of(authority)  //Rol a autoridades
+            List.of(authority)  //Rol como autoridad
         );
     }
 

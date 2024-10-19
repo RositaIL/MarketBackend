@@ -18,6 +18,10 @@ import pe.com.marbella.marketservice.service.SalidaService;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Implementación de la interfaz SalidaService.
+ * Proporciona métodos para gestionar las salidas, incluyendo la gestión de detalles de salida.
+ */
 @Service
 public class SalidaServiceImpl implements SalidaService {
     @Autowired
@@ -29,6 +33,12 @@ public class SalidaServiceImpl implements SalidaService {
     @Autowired
     DetalleSalidaService detalleSalidaService;
 
+    /**
+     * Mapea un objeto Salida a un objeto SalidaDTO.
+     *
+     * @param salida El objeto Salida a mapear.
+     * @return El objeto SalidaDTO mapeado.
+     */
     private SalidaDTO mapToDTO(Salida salida) {
         List<DetalleSalidaDTO> detalleSalidaDTOList = salida.getDetalleSalida().stream()
                 .map(detalle -> new DetalleSalidaDTO(
@@ -45,6 +55,13 @@ public class SalidaServiceImpl implements SalidaService {
         );
     }
 
+    /**
+     * Obtiene una página de salidas.
+     *
+     * @param pageable Objeto Pageable para la paginación.
+     * @return Una página de objetos SalidaDTO.
+     * @throws Exception Sí ocurre un error al obtener las salidas.
+     */
     @Override
     @Transactional(readOnly = true)
     public Page<SalidaDTO> findAll(Pageable pageable) throws Exception {
@@ -52,6 +69,13 @@ public class SalidaServiceImpl implements SalidaService {
                 .map(this::mapToDTO);
     }
 
+    /**
+     * Obtiene una salida por su ID.
+     *
+     * @param id El ID de la salida.
+     * @return El objeto SalidaDTO encontrado.
+     * @throws Exception Si ocurre un error al obtener la salida.
+     */
     @Override
     @Transactional(readOnly = true)
     public SalidaDTO findById(Long id) throws Exception {
@@ -61,6 +85,13 @@ public class SalidaServiceImpl implements SalidaService {
         return mapToDTO(salida);
     }
 
+    /**
+     * Guarda una nueva salida y sus detalles.
+     *
+     * @param salidaDTO El DTO de la salida a guardar.
+     * @return El DTO de la salida guardada.
+     * @throws Exception Si ocurre un error al guardar la salida.
+     */
     @Override
     @Transactional
     public SalidaDTO save(SalidaDTO salidaDTO) throws Exception {
@@ -85,6 +116,12 @@ public class SalidaServiceImpl implements SalidaService {
         return mapToDTO(respuesta);
     }
 
+    /**
+     * Elimina una salida.
+     *
+     * @param idSalida El ID de la salida a eliminar.
+     * @throws Exception Sí ocurre un error al eliminar la salida.
+     */
     @Override
     @Transactional
     public void delete(Long idSalida) throws Exception {

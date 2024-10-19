@@ -20,6 +20,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import pe.com.marbella.marketservice.JWT.JwtAuthenticationFilter;
 
+/**
+ * Configuración de seguridad de Spring Security.
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -28,6 +31,13 @@ public class SecurityConfig {
     @Autowired
     JwtAuthenticationFilter jwtRequestFilter;
 
+    /**
+     * Configura el filtro de seguridad.
+     *
+     * @param httpSecurity Objeto HttpSecurity para configurar la seguridad web.
+     * @return Un SecurityFilterChain configurado.
+     * @throws Exception Si ocurre un error durante la configuración.
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
@@ -42,11 +52,24 @@ public class SecurityConfig {
         httpSecurity.cors(Customizer.withDefaults());
         return httpSecurity.build();
     }
+
+    /**
+     * Crea un AuthenticationManager.
+     *
+     * @param authenticationConfiguration Configuración de autenticación.
+     * @return Un AuthenticationManager.
+     * @throws Exception Si ocurre un error al crear el AuthenticationManager.
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
+    /**
+     * Crea un codificador de contraseñas BCrypt.
+     *
+     * @return Un PasswordEncoder BCrypt.
+     */
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();

@@ -13,6 +13,10 @@ import pe.com.marbella.marketservice.service.DetalleEntradaService;
 
 import java.util.List;
 
+/**
+ * Implementación de la interfaz DetalleEntradaService.
+ * Proporciona métodos para gestionar los detalles de las entradas.
+ */
 @Service
 public class DetalleEntradaServiceImpl implements DetalleEntradaService {
     @Autowired
@@ -20,6 +24,13 @@ public class DetalleEntradaServiceImpl implements DetalleEntradaService {
     @Autowired
     ProductoRepository productoRepository;
 
+    /**
+     * Guarda un nuevo detalle de entrada y actualiza el stock del producto asociado.
+     *
+     * @param detalleEntrada El detalle de entrada a guardar.
+     * @return El detalle de entrada guardado.
+     * @throws Exception Si ocurre un error al guardar el detalle de entrada.
+     */
     @Override
     @Transactional
     public DetalleEntrada save(DetalleEntrada detalleEntrada) throws Exception{
@@ -34,6 +45,12 @@ public class DetalleEntradaServiceImpl implements DetalleEntradaService {
         return detalleEntradaRepository.save(detalleEntrada);
     }
 
+    /**
+     * Elimina los detalles de entrada asociados a una entrada y actualiza el stock de los productos asociados.
+     *
+     * @param idEntrada El ID de la entrada a la que pertenecen los detalles de entrada.
+     * @throws Exception Si ocurre un error al eliminar los detalles de entrada.
+     */
     @Override
     @Transactional
     public void delete(Long idEntrada) throws Exception{
