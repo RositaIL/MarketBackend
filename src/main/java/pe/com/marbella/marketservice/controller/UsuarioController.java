@@ -17,7 +17,6 @@ import pe.com.marbella.marketservice.service.UsuarioService;
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/usuario")
-@PreAuthorize("hasRole('ADMINISTRADOR')")
 public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
@@ -28,19 +27,23 @@ public class UsuarioController {
         return new ResponseEntity<>(usuarios, HttpStatus.OK);
     }
 
+    
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<UsuarioResponseDTO> obtenerUsuarioPorId(@PathVariable Long id) throws Exception {
         UsuarioResponseDTO usuarioDTO = usuarioService.findById(id);
         return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<UsuarioResponseDTO> crearUsuario(@Validated(OnCreate.class) @RequestBody UsuarioDTO usuarioDTO) throws Exception {
         UsuarioResponseDTO nuevoUsuario = usuarioService.save(usuarioDTO);
         return new ResponseEntity<>(nuevoUsuario, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<UsuarioResponseDTO> actualizarUsuario(@PathVariable Long id, @Validated(OnUpdate.class) @RequestBody UsuarioDTO usuarioDTO) throws Exception {
         if (!id.equals(usuarioDTO.idUsuario())) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -50,6 +53,7 @@ public class UsuarioController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<Void> eliminarUsuario(@PathVariable Long id) throws Exception {
         usuarioService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);

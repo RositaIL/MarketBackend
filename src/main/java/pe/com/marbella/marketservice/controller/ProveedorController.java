@@ -20,7 +20,6 @@ public class ProveedorController {
     @Autowired
     private ProveedorService proveedorService;
 
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @GetMapping
     public ResponseEntity<Page<ProveedorDTO>> getAllProveedores(@RequestParam(defaultValue = "") String nombre, Pageable pageable) throws Exception {
         Page<ProveedorDTO> proveedores = proveedorService.findAll(nombre, pageable);
